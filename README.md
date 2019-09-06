@@ -1,0 +1,2 @@
+# openmips
+trivial CPU
