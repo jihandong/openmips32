@@ -1,3 +1,5 @@
+`include "defines.v"
+
 module mem(
     input wire rst,
     input wire [`RegAddrBus] wd_i,
@@ -17,7 +19,7 @@ module mem(
         end else begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
-            wdata_o <= wdata_o;
+            wdata_o <= wdata_i; //细节错误，将wdata_i错写成wdata_o，无报错
         end
     end
 

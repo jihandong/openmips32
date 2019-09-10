@@ -1,3 +1,5 @@
+`include "defines.v"
+
 module id(
     input wire rst,
     input wire [`InstAddrBus] pc_i,
@@ -32,21 +34,21 @@ module id(
 
     // phase1 : decode the inst
     always @ (*) begin
-        if ((rst == `RstEnable) || (alusel_o == EXE_NOP)) begin
+        if (rst == `RstEnable) begin
             aluop_o <= `EXE_NOP_OP;
             alusel_o <= `EXE_RES_NOP;
             reg1_read_o <= `ReadDisable;
             reg1_addr_o <= `NOPRegAddr;
             reg2_read_o <= `ReadDisable;
             reg2_addr_o <= `NOPRegAddr;
-            imm <= `Zeroword;
+            imm <= `ZeroWord;
             wreg_o <= `WriteDisable;
             wd_o <= `NOPRegAddr;
         end else begin
             case (op)
                 `EXE_ORI : begin
-                    aluop_o <= `EXE_ORI_OP;
-                    alusel_o <= `EXE_NOP_OP;
+                    aluop_o <= `EXE_OR_OP;
+                    alusel_o <= `EXE_RES_LOGIC;
                     reg1_read_o <= `ReadEnable;
                     reg1_addr_o <= rs;
                     reg2_read_o <= `ReadDisable;
@@ -56,6 +58,15 @@ module id(
                     wd_o <= rt;
                 end
                 default : begin
+                    aluop_o <= `EXE_NOP_OP;
+                    alusel_o <= `EXE_RES_NOP;
+                    reg1_read_o <= `ReadDisable;
+                    reg1_addr_o <= `NOPRegAddr;
+                    reg2_read_o <= `ReadDisable;
+                    reg2_addr_o <= `NOPRegAddr;
+                    imm <= `ZeroWord;
+                    wreg_o <= `WriteDisable;
+                    wd_o <= `NOPRegAddr;
                 end
             endcase
         end
@@ -67,7 +78,7 @@ module id(
             reg1_o <= `ZeroWord;
         end else if (reg1_read_o == `ReadEnable) begin
             reg1_o <= reg1_data_i;
-        end else if (Reg1_read_o == `ReadDisable) begin
+        end else if (reg1_read_o == `ReadDisable) begin
             reg1_o <= imm;
         end else begin
             reg1_o <= `ZeroWord;
@@ -80,7 +91,7 @@ module id(
             reg2_o <= `ZeroWord;
         end else if (reg2_read_o == `ReadEnable) begin
             reg2_o <= reg2_data_i;
-        end else if (Reg2_read_o == `ReadDisable) begin
+        end else if (reg2_read_o == `ReadDisable) begin
             reg2_o <= imm;
         end else begin
             reg2_o <= `ZeroWord;

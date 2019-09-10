@@ -1,3 +1,5 @@
+`include "defines.v"
+
 module id_ex(
     input wire clk,
     input wire rst,
@@ -13,14 +15,14 @@ module id_ex(
     output reg [`RegBus] ex_reg1,
     output reg [`RegBus] ex_reg2,
     output reg [`RegAddrBus] ex_wd,
-    output reg ex_wreg,
+    output reg ex_wreg
 );
 
     always @ (posedge clk) begin
         if (rst == `RstEnable) begin
             ex_alusel <= `EXE_RES_NOP;
             ex_aluop <= `EXE_NOP_OP;
-            ex_reg1 <= `Zeroword;
+            ex_reg1 <= `ZeroWord;
             ex_reg2 <= `ZeroWord;
             ex_wd <= `WriteDisable;
             ex_wreg <= `NOPRegAddr;

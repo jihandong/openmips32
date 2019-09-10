@@ -19,7 +19,7 @@ module openmips_sopc_tb();
   end
 
   //SOPC实例
-  openmips_min_sopc openmips_min_sopc0(
+  sopc sopc0(
 		.clk(CLOCK_50),
 		.rst(rst)	
 	);

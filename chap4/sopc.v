@@ -1,6 +1,8 @@
+`include "defines.v"
+
 module sopc(
-    input wire rst; 
-    input wire clk;
+    input wire rst,
+    input wire clk
 );
 
     wire ce;
@@ -12,7 +14,7 @@ module sopc(
         .clk(clk),
         .rom_data_i(inst),
 
-        .rom_addr_i(addr),
+        .rom_addr_o(addr),
         .rom_ce_o(ce)
     );
 

@@ -1,9 +1,11 @@
+`include "defines.v"
+
 module regfile(
     input wire clk,
     input wire rst,
     //ID phase
     input wire re1,
-    input wire re2，
+    input wire re2,
     input wire [`RegAddrBus] raddr1,
     input wire [`RegAddrBus] raddr2,
     //WB phase
@@ -12,7 +14,7 @@ module regfile(
     input wire [`RegBus] wdata,
     //values of rs & rt
     output reg [`RegBus] rdata1,
-    output reg [`RegBus] rdata2,
+    output reg [`RegBus] rdata2
 );
 
     // phase0 : dfine 32 registers
@@ -20,7 +22,7 @@ module regfile(
 
     // phase1 : WB phase
     always @ (posedge clk) begin
-        if ((rst == `RstEnable) && (we == `WriteEnable)) begin
+        if ((rst == `RstDisable) && (we == `WriteEnable) && (waddr != `NOPRegAddr)) begin
             regs[waddr] <= wdata;
         end
     end
@@ -33,6 +35,8 @@ module regfile(
             rdata1 <= wdata;
         end else if (re1 == `ReadEnable) begin  //just read
             rdata1 <= regs[raddr1];
+        end else begin
+            rdata1 <= `ZeroWord;
         end
     end
 
@@ -44,6 +48,8 @@ module regfile(
             rdata2 <= wdata;
         end else if (re2 == `ReadEnable) begin
             rdata2 <= regs[raddr2];
+        end else begin
+            rdata2 <= `ZeroWord;
         end
     end
 

@@ -1,9 +1,12 @@
+`include "defines.v"
+
 module openmips(
-    input wire rst;
-    input wire clk;
-    input wire [`InstBus] rom_data_i;
-    output wire [`InstAddrBus] rom_addr_o;
-    output wire rom_ce_o;
+    input wire rst,
+    input wire clk,
+    input wire [`InstBus] rom_data_i,
+
+    output wire [`InstAddrBus] rom_addr_o,
+    output wire rom_ce_o
 );
     // outputModuleName_inputModuleName_portName
     // pc & if_id
@@ -57,8 +60,8 @@ module openmips(
     wire [`RegBus] memwb_reg_wdata;
     
     // regfile & id
-    wire reg_id_rdata1;
-    wire reg_id_rdata2;
+    wire [`RegBus] reg_id_rdata1;
+    wire [`RegBus] reg_id_rdata2;
 
     pc_reg pc_reg0(
         .rst(rst),
@@ -85,8 +88,8 @@ module openmips(
         .reg1_data_i(reg_id_rdata1),
         .reg2_data_i(reg_id_rdata2),
 
-        .aluop(id_idex_aluop),
-        .slusel(id_idex_alusel),
+        .aluop_o(id_idex_aluop),
+        .alusel_o(id_idex_alusel),
         .reg1_o(id_idex_reg1),
         .reg2_o(id_idex_reg2),
         .wd_o(id_idex_wd),
@@ -153,7 +156,7 @@ module openmips(
 
         .mem_wd(exmem_mem_wd),
         .mem_wreg(exmem_mem_wreg),
-        .mem_wdata(exmem_mem_wdata),
+        .mem_wdata(exmem_mem_wdata)
     );
 
     mem mem0(
@@ -164,19 +167,19 @@ module openmips(
 
         .wd_o(mem_memwb_wd),
         .wreg_o(mem_memwb_wreg),
-        .wdata_o(mem_memwb_wdata),        
+        .wdata_o(mem_memwb_wdata)     
     );
 
-    mem_wb mem_wb(
+    mem_wb mem_wb0(
         .rst(rst),
         .clk(clk),
         .mem_wd(mem_memwb_wd),
         .mem_wreg(mem_memwb_wreg),
         .mem_wdata(mem_memwb_wdata),
 
-        .wb_wd(memwb_reg_wb),
+        .wb_wd(memwb_reg_wd),
         .wb_wreg(memwb_reg_wreg),
-        .wb_wdata(memwb_reg_wdata),
+        .wb_wdata(memwb_reg_wdata)
     );
 
 endmodule
