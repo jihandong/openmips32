@@ -83,9 +83,9 @@ module id(
     always @ (*) begin
         if (rst == `RstEnable) begin
             reg1_o <= `ZeroWord;
-        end else if ((reg1_read_o == `ReadEnable) && (reg1_read_o == ex_wd_i) && (ex_wreg_i == `WriteEnable)) begin
+        end else if ((reg1_read_o == `ReadEnable) && (reg1_addr_o == ex_wd_i) && (ex_wreg_i == `WriteEnable)) begin
             reg1_o <= ex_wdata_i; //bypass for Data Harzard
-        end else if ((reg1_read_o == `ReadEnable) && (reg1_read_o == ex_wd_i) && (mem_wreg_i == `WriteEnable)) begin
+        end else if ((reg1_read_o == `ReadEnable) && (reg1_addr_o == mem_wd_i) && (mem_wreg_i == `WriteEnable)) begin
             reg1_o <= mem_wdata_i; //bypass for Data Harzard
         end else if (reg1_read_o == `ReadEnable) begin
             reg1_o <= reg1_data_i;
@@ -100,9 +100,9 @@ module id(
     always @ (*) begin
         if (rst == `RstEnable) begin
             reg2_o <= `ZeroWord;
-        end else if ((reg2_read_o == `ReadEnable) && (reg2_read_o == ex_wd_i) && (ex_wreg_i == `WriteEnable)) begin
+        end else if ((reg2_read_o == `ReadEnable) && (reg2_addr_o == ex_wd_i) && (ex_wreg_i == `WriteEnable)) begin
             reg1_o <= ex_wdata_i;
-        end else if ((reg2_read_o == `ReadEnable) && (reg2_read_o == ex_wd_i) && (mem_wreg_i == `WriteEnable)) begin
+        end else if ((reg2_read_o == `ReadEnable) && (reg2_addr_o == mem_wd_i) && (mem_wreg_i == `WriteEnable)) begin
             reg1_o <= mem_wdata_i;
         end else if (reg2_read_o == `ReadEnable) begin
             reg2_o <= reg2_data_i;
