@@ -16,6 +16,7 @@ module ex(
 
     //phase0 : keep result
     reg [`RegBus] logicRes;
+    reg [`RegBus] shiftRes;
 
     // phase1 : do alu (according to aluop_i)
     always @ (*) begin
@@ -23,11 +24,30 @@ module ex(
             logicRes <= `ZeroWord;
         end else begin
             case (aluop_i)
-                `EXE_OR_OP : begin
+                `EXE_AND_OP : begin
+                    logicRes <= reg1_i & reg2_i;
+                end
+                `EXE_OR_OP  : begin
                     logicRes <= reg1_i | reg2_i;
-                end    
+                end
+                `EXE_XOR_OP : begin
+                    logicRes <= reg1_i ^ reg2_i;
+                end
+                `EXE_NOR_OP : begin
+                    logicRes <= ~(reg1_i | reg2_i);
+                end
+                `EXE_SLL_OP : begin
+                    shiftRes <= reg1_i << reg2_i[4:0];
+                end
+                `EXE_SRL_OP : begin
+                    shiftRes <= reg1_i >> reg2_i[4:0];
+                end
+                `EXE_SRA_OP : begin
+                    shiftRes <= reg1_i >>> reg2_i[4:0];
+                end
                 default : begin
                     logicRes <= `ZeroWord;
+                    shiftRes <= `ZeroWord;
                 end
             endcase
         end
@@ -40,7 +60,10 @@ module ex(
         case (alusel_i)
             `EXE_RES_LOGIC : begin
                 wdata_o <= logicRes;
-            end    
+            end
+            `EXE_RES_SHIFT : begin
+                wdata_o <= shiftRes;
+            end
             default : begin
                 wdata_o <= `ZeroWord;
             end

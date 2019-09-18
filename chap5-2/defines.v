@@ -27,6 +27,12 @@
 
 //指令
 `define EXE_SPECIAL 6'b000000
+`define EXE_SLL     6'b000000
+`define EXE_SRL     6'b000010
+`define EXE_SRA     6'b000011
+`define EXE_SLLV    6'b000100
+`define EXE_SRLV    6'b000110
+`define EXE_SRAV    6'b000111
 `define EXE_AND     6'b100100
 `define EXE_OR      6'b100101
 `define EXE_XOR     6'b100110
@@ -35,29 +41,22 @@
 `define EXE_ORI     6'b001101
 `define EXE_XORI    6'b001110    
 `define EXE_LUI     6'b001111
-`define EXE_SLL     6'b000000
-`define EXE_SRL     6'b000010
-`define EXE_SRA     6'b000011
-`define EXE_SLLV    6'b000100
-`define EXE_SRLV    6'b000110
-`define EXE_SRAV    6'b000111
 
 
 //AluOp
-`define EXE_NOP_OP  8'b00000000
-`define EXE_ORI_OP  8'b00100101
-`define EXE_OR_OP
-`define EXE_ANDI_OP
+`define EXE_NOP_OP 8'b00000000
 `define EXE_AND_OP
-`define EXE_XORI_OP
+`define EXE_OR_OP  8'b00100101
 `define EXE_XOR_OP
 `define EXE_NOR_OP
-`define EXE_LUI_OP
+`define EXE_SLL_OP
+`define EXE_SRL_OP
+`define EXE_SRA_OP
 
 //AluSel
+`define EXE_RES_NOP   3'b000
 `define EXE_RES_LOGIC 3'b001
-`define EXE_RES_NOP 3'b000
-`define EXE_RES_SHIFT
+`define EXE_RES_SHIFT 3'b010
 
 //指令存储器inst_rom
 `define InstAddrBus 31:0    //地址总线宽度

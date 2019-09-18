@@ -1,3 +1,9 @@
+/* id译码模块
+ * 指令使用EXE_name表示，操作使用EXE_name_OP表示
+ * 两者有区别，前者对应指令，后者对应ex阶段的操作
+ * 比如andi和and的操作是相同的，只是操作数格式不同
+ * id阶段可以解读指令操作数的值，所以经过id后andi和and再无区别 
+ */
 `include "defines.v"
 
 module id(
@@ -57,26 +63,26 @@ module id(
             inst <= `InstInvalid;
             case (op)
                 `EXE_SPECIAL : begin
-                    if (rs == 0) begin
+                    if (rs == `NOPRegAddr) begin
                         case(func)
                             `EXE_SLL : begin
                                 aluop_o <= `EXE_SLL_OP; alusel_o <= `EXE_RES_SHIFT;
                                 reg1_read_o <= `ReadEnable; reg1_addr_o <= rt;
-                                reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                                reg2_read_o <= `ReadDisable;
                                 imm[4:0] <= sa;
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             `EXE_SRL  : begin
                                 aluop_o <= `EXE_SRL_OP; alusel_o <= `EXE_RES_SHIFT;
                                 reg1_read_o <= `ReadEnable; reg1_addr_o <= rt;
-                                reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                                reg2_read_o <= `ReadDisable;
                                 imm[4:0] <= sa; //logic
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             `EXE_SRA  : begin
                                 aluop_o <= `EXE_SRA_OP; alusel_o <= `EXE_RES_SHIFT;
                                 reg1_read_o <= `ReadEnable; reg1_addr_o <= rt;
-                                reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                                reg2_read_o <= `ReadDisable;
                                 imm[4:0] <= sa; //arithmetic
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
@@ -128,43 +134,48 @@ module id(
                             end
                             `EXE_SYNC : begin
                                 aluop_o <= `EXE_SYNC_OP; alusel_o <= `EXE_RES_NOP;
-                                reg1_read_o <= `ReadDisable; reg1_addr_o <= rs;
+                                reg1_read_o <= `ReadDisable;
                                 reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
-                                wreg_o <= `WriteDisable; wd_o <= rd;
+                                wreg_o <= `WriteDisable;
+                            end
+                            default : beigin
                             end
                         endcase
                     end
                 end
                 `EXE_ANDI : begin
-                    aluop_o <= `EXE_ANDI_OP; alusel_o <= `EXE_RES_LOGIC;
+                    aluop_o <= `EXE_AND_OP; alusel_o <= `EXE_RES_LOGIC;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
-                    reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                    reg2_read_o <= `ReadDisable;
                     imm <= {16'b0, inst_i[15:0]};
                     wreg_o <= `WriteEnable; wd_o <= rt;
                 end
                 `EXE_ORI : begin
-                    aluop_o <= `EXE_ORI_OP; alusel_o <= `EXE_RES_LOGIC;
+                    aluop_o <= `EXE_OR_OP; alusel_o <= `EXE_RES_LOGIC;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
-                    reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                    reg2_read_o <= `ReadDisable;
                     imm <= {16'b0, inst_i[15:0]}; //should be `RegWidth - 16
                     wreg_o <= `WriteEnable; wd_o <= rt;
                 end
                 `EXE_XORI : begin
-                    aluop_o <= `EXE_XORI_OP; alusel_o <= `EXE_RES_LOGIC;
+                    aluop_o <= `EXE_XOR_OP; alusel_o <= `EXE_RES_LOGIC;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
-                    reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                    reg2_read_o <= `ReadDisable;
                     imm <= {16'b0, inst_i[15:0]};
                     wreg_o <= `WriteEnable; wd_o <= rt;
                 end
                 `EXE_LUI : begin
-                    aluop_o <= `EXE_LUI_OP; alusel_o <= `EXE_RES_LOGIC;
+                    aluop_o <= `EXE_OR_OP; alusel_o <= `EXE_RES_LOGIC;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
-                    reg2_read_o <= `ReadDisable; reg2_addr_o <= `ZeroWord;
+                    reg2_read_o <= `ReadDisable;
                     imm <= {16'b0, inst_i[15:0]};
                     wreg_o <= `WriteEnable; wd_o <= rt;
                 end
                 `EXE_PREF : begin
-
+                    aluop_o <= `EXE_PREF_OP; alusel_o <= `EXE_RES_LOGIC;
+                    reg1_read_o <= `ReadDisable;
+                    reg2_read_o <= `ReadDisable;
+                    wreg_o <= `WriteEnable;
                 end
                 default : begin
                 end
