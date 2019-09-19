@@ -53,14 +53,14 @@ module id(
             reg2_read_o <= `ReadDisable; reg2_addr_o <= `NOPRegAddr;
             imm <= `ZeroWord;
             wreg_o <= `WriteDisable; wd_o <= `NOPRegAddr;
-            inst <= `InstValid;
+            instvalid <= `InstValid;
         end else begin
             aluop_o <= `EXE_NOP_OP; alusel_o <= `EXE_RES_NOP;
             reg1_read_o <= `ReadDisable; reg1_addr_o <= `NOPRegAddr;
             reg2_read_o <= `ReadDisable; reg2_addr_o <= `NOPRegAddr;
             imm <= `ZeroWord;
             wreg_o <= `WriteDisable; wd_o <= `NOPRegAddr;
-            inst <= `InstInvalid;
+            instvalid <= `InstValid;
             case (op)
                 `EXE_SPECIAL : begin
                     if (rs == `NOPRegAddr) begin
@@ -87,7 +87,9 @@ module id(
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             default : begin
+                                instvalid <= `InstInvalid;
                             end
+                        endcase
                     end else begin
                         case(func)
                             `EXE_AND : begin
@@ -115,30 +117,31 @@ module id(
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             `EXE_SLLV : begin
-                                aluop_o <= `EXE_SLLV_OP; alusel_o <= `EXE_RES_SHIFT;
+                                aluop_o <= `EXE_SLL_OP; alusel_o <= `EXE_RES_SHIFT;
                                 reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
                                 reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             `EXE_SRLV : begin
-                                aluop_o <= `EXE_SRLV_OP; alusel_o <= `EXE_RES_SHIFT;
+                                aluop_o <= `EXE_SRL_OP; alusel_o <= `EXE_RES_SHIFT;
                                 reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
                                 reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             `EXE_SRAV : begin
-                                aluop_o <= `EXE_SRAV_OP; alusel_o <= `EXE_RES_SHIFT;
+                                aluop_o <= `EXE_SRA_OP; alusel_o <= `EXE_RES_SHIFT;
                                 reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
                                 reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                                 wreg_o <= `WriteEnable; wd_o <= rd;
                             end
                             `EXE_SYNC : begin
-                                aluop_o <= `EXE_SYNC_OP; alusel_o <= `EXE_RES_NOP;
+                                aluop_o <= `EXE_NOP_OP; alusel_o <= `EXE_RES_NOP;
                                 reg1_read_o <= `ReadDisable;
                                 reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                                 wreg_o <= `WriteDisable;
                             end
-                            default : beigin
+                            default : begin
+                                instvalid <= `InstInvalid;
                             end
                         endcase
                     end
@@ -168,16 +171,17 @@ module id(
                     aluop_o <= `EXE_OR_OP; alusel_o <= `EXE_RES_LOGIC;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
                     reg2_read_o <= `ReadDisable;
-                    imm <= {16'b0, inst_i[15:0]};
+                    imm <= {inst_i[15:0], 16'b0};
                     wreg_o <= `WriteEnable; wd_o <= rt;
                 end
                 `EXE_PREF : begin
-                    aluop_o <= `EXE_PREF_OP; alusel_o <= `EXE_RES_LOGIC;
+                    aluop_o <= `EXE_NOP_OP; alusel_o <= `EXE_RES_NOP;
                     reg1_read_o <= `ReadDisable;
                     reg2_read_o <= `ReadDisable;
-                    wreg_o <= `WriteEnable;
+                    wreg_o <= `WriteDisable;
                 end
                 default : begin
+                    instvalid <= `InstInvalid;
                 end
             endcase
         end
@@ -205,9 +209,9 @@ module id(
         if (rst == `RstEnable) begin
             reg2_o <= `ZeroWord;
         end else if ((reg2_read_o == `ReadEnable) && (reg2_addr_o == ex_wd_i) && (ex_wreg_i == `WriteEnable)) begin
-            reg1_o <= ex_wdata_i;
+            reg2_o <= ex_wdata_i;
         end else if ((reg2_read_o == `ReadEnable) && (reg2_addr_o == mem_wd_i) && (mem_wreg_i == `WriteEnable)) begin
-            reg1_o <= mem_wdata_i;
+            reg2_o <= mem_wdata_i;
         end else if (reg2_read_o == `ReadEnable) begin
             reg2_o <= reg2_data_i;
         end else if (reg2_read_o == `ReadDisable) begin

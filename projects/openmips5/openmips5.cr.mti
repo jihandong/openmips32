@@ -1,95 +1,92 @@
-D:/GITdownload/openmips/chap5/inst_rom.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/inst_rom.v
+D:/GITdownload/openmips/chap5-2/inst_rom.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/inst_rom.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module inst_rom
 
 Top level modules:
 	inst_rom
 
-} {} {}} D:/GITdownload/openmips/chap5/sopc.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/sopc.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module sopc
-
-Top level modules:
-	sopc
-
-} {} {}} D:/GITdownload/openmips/chap5/mem_wb.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/mem_wb.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module mem_wb
-
-Top level modules:
-	mem_wb
-
-} {} {}} D:/GITdownload/openmips/chap5/pc_reg.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/pc_reg.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module pc_reg
-
-Top level modules:
-	pc_reg
-
-} {} {}} D:/GITdownload/openmips/chap5/id_ex.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/id_ex.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module id_ex
-
-Top level modules:
-	id_ex
-
-} {} {}} D:/GITdownload/openmips/chap5/ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/ex_mem.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module ex_mem
-
-Top level modules:
-	ex_mem
-
-} {} {}} D:/GITdownload/openmips/chap5/if_id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/if_id.v
+} {} {}} D:/GITdownload/openmips/chap5-2/if_id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/if_id.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module if_id
 
 Top level modules:
 	if_id
 
-} {} {}} D:/GITdownload/openmips/chap5/openmips.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/openmips.v
+} {} {}} D:/GITdownload/openmips/chap5-2/sopc.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/sopc.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module openmips
+-- Compiling module sopc
 
 Top level modules:
-	openmips
+	sopc
 
-} {} {}} D:/GITdownload/openmips/chap5/openmips_sopc_tb.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/openmips_sopc_tb.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module openmips_sopc_tb
-
-Top level modules:
-	openmips_sopc_tb
-
-} {} {}} D:/GITdownload/openmips/chap5/ex.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/ex.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module ex
-
-Top level modules:
-	ex
-
-} {} {}} D:/GITdownload/openmips/chap5/id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/id.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module id
-
-Top level modules:
-	id
-
-} {} {}} D:/GITdownload/openmips/chap5/defines.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/defines.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
-
-} {} {}} D:/GITdownload/openmips/chap5/regfile.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/regfile.v
+} {} {}} D:/GITdownload/openmips/chap5-2/regfile.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/regfile.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module regfile
 
 Top level modules:
 	regfile
 
-} {} {}} D:/GITdownload/openmips/chap5/mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5/mem.v
+} {} {}} D:/GITdownload/openmips/chap5-2/mem_wb.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/mem_wb.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module mem_wb
+
+Top level modules:
+	mem_wb
+
+} {} {}} D:/GITdownload/openmips/chap5-2/mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/mem.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module mem
 
 Top level modules:
 	mem
+
+} {} {}} D:/GITdownload/openmips/chap5-2/pc_reg.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/pc_reg.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module pc_reg
+
+Top level modules:
+	pc_reg
+
+} {} {}} D:/GITdownload/openmips/chap5-2/openmips.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/openmips.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module openmips
+
+Top level modules:
+	openmips
+
+} {} {}} D:/GITdownload/openmips/chap5-2/ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/ex_mem.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module ex_mem
+
+Top level modules:
+	ex_mem
+
+} {} {}} D:/GITdownload/openmips/chap5-2/openmips_sopc_tb.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/openmips_sopc_tb.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module openmips_sopc_tb
+
+Top level modules:
+	openmips_sopc_tb
+
+} {} {}} D:/GITdownload/openmips/chap5-2/id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/id.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module id
+
+Top level modules:
+	id
+
+} {} {}} D:/GITdownload/openmips/chap5-2/ex.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/ex.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module ex
+
+Top level modules:
+	ex
+
+} {} {}} D:/GITdownload/openmips/chap5-2/id_ex.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap5-2/id_ex.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module id_ex
+
+Top level modules:
+	id_ex
 
 } {} {}}

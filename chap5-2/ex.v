@@ -22,6 +22,7 @@ module ex(
     always @ (*) begin
         if (rst == `RstEnable) begin
             logicRes <= `ZeroWord;
+            shiftRes <= `ZeroWord;
         end else begin
             case (aluop_i)
                 `EXE_AND_OP : begin

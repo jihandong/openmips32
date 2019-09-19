@@ -8,8 +8,8 @@
 `define ReadDisable 1'b0        //不可读
 `define AluOpBus 7:0            //译码阶段的输出aluop_o的宽度
 `define AluSelBus 2:0           //译码阶段的输出alusel_o的宽度
-`define InstValid 1'b0          //指令有效
-`define InstInvalid 1'b1        //指令无效
+`define InstValid 1'b1          //指令有效
+`define InstInvalid 1'b0        //指令无效
 `define Stop 1'b1
 `define NoStop 1'b0
 `define InDelaySlot 1'b1
@@ -33,6 +33,8 @@
 `define EXE_SLLV    6'b000100
 `define EXE_SRLV    6'b000110
 `define EXE_SRAV    6'b000111
+`define EXE_SYNC    6'b001111
+`define EXE_PREF    6'b110011
 `define EXE_AND     6'b100100
 `define EXE_OR      6'b100101
 `define EXE_XOR     6'b100110
@@ -45,13 +47,13 @@
 
 //AluOp
 `define EXE_NOP_OP 8'b00000000
-`define EXE_AND_OP
+`define EXE_AND_OP 8'b00100100
 `define EXE_OR_OP  8'b00100101
-`define EXE_XOR_OP
-`define EXE_NOR_OP
-`define EXE_SLL_OP
-`define EXE_SRL_OP
-`define EXE_SRA_OP
+`define EXE_XOR_OP 8'b00100110
+`define EXE_NOR_OP 8'b00100111
+`define EXE_SLL_OP 8'b01111100
+`define EXE_SRL_OP 8'b00000010
+`define EXE_SRA_OP 8'b00000011
 
 //AluSel
 `define EXE_RES_NOP   3'b000
