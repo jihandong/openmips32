@@ -38,13 +38,13 @@ module ex(
                     logicRes <= ~(reg1_i | reg2_i);
                 end
                 `EXE_SLL_OP : begin
-                    shiftRes <= reg1_i << reg2_i[4:0];
+                    shiftRes <= reg2_i << reg1_i[4:0];
                 end
                 `EXE_SRL_OP : begin
-                    shiftRes <= reg1_i >> reg2_i[4:0];
+                    shiftRes <= reg2_i >> reg1_i[4:0];
                 end
                 `EXE_SRA_OP : begin
-                    shiftRes <= reg1_i >>> reg2_i[4:0];
+                    shiftRes <= ($signed(reg2_i)) >>> reg1_i[4:0];
                 end
                 default : begin
                     logicRes <= `ZeroWord;
