@@ -1,0 +1,308 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/GITdownload/openmips/projects/openmips5
+T_opt
+!s110 1568943635
+V<>T;;6ODEP<E0h?RChXKZ0
+Z1 04 16 4 work openmips_sopc_tb fast 0
+=1-fc4596205a25-5d842e13-318-29e0
+Z2 o-quiet -auto_acc_if_foreign -work work +acc
+n@_opt
+Z3 OL;O;10.4;61
+R0
+T_opt1
+!s110 1568955150
+V<@[?=0XlG8Oc1gALPAzz`2
+R1
+=1-fc4596205a25-5d845b0e-2d4-10d4
+R2
+n@_opt1
+R3
+R0
+vex
+Z4 !s110 1568955217
+!i10b 1
+!s100 PH]Xf6f1zondd=18P974z1
+IC@oB9RG`OQn]BSb856bfM0
+Z5 VDg1SIo80bB@j0V0VzS_@n1
+Z6 dD:/GITdownload/openmips/projects/openmips6
+w1568951345
+8D:/GITdownload/openmips/chap6/ex.v
+FD:/GITdownload/openmips/chap6/ex.v
+L0 3
+Z7 OL;L;10.4;61
+r1
+!s85 0
+31
+!s108 1568955217.111000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/ex.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/ex.v|
+!i113 0
+Z8 o-work work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+vex_mem
+R4
+!i10b 1
+!s100 kUQY3lW=4?<EI2oGBLD=_0
+IQ]@@_19l[^c[@ST0hC8Dl1
+R5
+R6
+w1568907668
+8D:/GITdownload/openmips/chap6/ex_mem.v
+FD:/GITdownload/openmips/chap6/ex_mem.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.176000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/ex_mem.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/ex_mem.v|
+!i113 0
+R8
+vhilo_reg
+R4
+!i10b 1
+!s100 FV[j<B3i=jk?jh<3?MEfe3
+I`1SM`WX3[g5e]J`b54f3D3
+R5
+R6
+w1568955100
+8D:/GITdownload/openmips/chap6/hilo_reg.v
+FD:/GITdownload/openmips/chap6/hilo_reg.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.237000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/hilo_reg.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/hilo_reg.v|
+!i113 0
+R8
+vid
+R4
+!i10b 1
+!s100 b]OXmPS4DlKRTl=nHDX1M2
+I7?W=Pz@[Ya<4J26]Kn23e2
+R5
+R6
+w1568948628
+8D:/GITdownload/openmips/chap6/id.v
+FD:/GITdownload/openmips/chap6/id.v
+L0 9
+R7
+r1
+!s85 0
+31
+!s108 1568955217.301000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/id.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/id.v|
+!i113 0
+R8
+vid_ex
+R4
+!i10b 1
+!s100 b:gz9^mPmn@h3NOi0kWLH3
+IQ]ed>T_LOLY2zQdT2=cnB3
+R5
+R6
+Z9 w1568691152
+8D:/GITdownload/openmips/chap6/id_ex.v
+FD:/GITdownload/openmips/chap6/id_ex.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.371000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/id_ex.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/id_ex.v|
+!i113 0
+R8
+vif_id
+R4
+!i10b 1
+!s100 @hFf1;eUa_OoM;^<>8cB<2
+IeVZKdLf?6;mP=UbViB6Wz1
+R5
+R6
+R9
+8D:/GITdownload/openmips/chap6/if_id.v
+FD:/GITdownload/openmips/chap6/if_id.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.440000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/if_id.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/if_id.v|
+!i113 0
+R8
+vinst_rom
+R4
+!i10b 1
+!s100 T^5ea4bDSjSbBfJXn19W@3
+IlA;gM;02]Uj?^X0AOY;3N2
+R5
+R6
+w1568724010
+8D:/GITdownload/openmips/chap6/inst_rom.v
+FD:/GITdownload/openmips/chap6/inst_rom.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.502000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/inst_rom.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/inst_rom.v|
+!i113 0
+R8
+vmem
+R4
+!i10b 1
+!s100 XbkWPW0A>1a1m:Y<JfACS3
+IO8bRac;OXf663j9NL=Z0B2
+R5
+R6
+w1568907777
+8D:/GITdownload/openmips/chap6/mem.v
+FD:/GITdownload/openmips/chap6/mem.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.585000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/mem.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/mem.v|
+!i113 0
+R8
+vmem_wb
+R4
+!i10b 1
+!s100 F?n3lBbkRg8]_0kK^<hI03
+IBFTonKAARoJg[W5Q3]A@B2
+R5
+R6
+w1568907948
+8D:/GITdownload/openmips/chap6/mem_wb.v
+FD:/GITdownload/openmips/chap6/mem_wb.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.650000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/mem_wb.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/mem_wb.v|
+!i113 0
+R8
+vopenmips
+R4
+!i10b 1
+!s100 P?O>D<ZK<?[MEe8^`@8511
+ITGI_>=8V=hg`g9a8Uz3fl1
+R5
+R6
+w1568954475
+8D:/GITdownload/openmips/chap6/openmips.v
+FD:/GITdownload/openmips/chap6/openmips.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.715000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/openmips.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/openmips.v|
+!i113 0
+R8
+vopenmips_sopc_tb
+R4
+!i10b 1
+!s100 mc8I4<nS;[bBG@BCIM:_>0
+IIgI8YAo@8BkJUjU`8aIi03
+R5
+R6
+R9
+8D:/GITdownload/openmips/chap6/openmips_sopc_tb.v
+FD:/GITdownload/openmips/chap6/openmips_sopc_tb.v
+L0 4
+R7
+r1
+!s85 0
+31
+!s108 1568955217.782000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/openmips_sopc_tb.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/openmips_sopc_tb.v|
+!i113 0
+R8
+vpc_reg
+R4
+!i10b 1
+!s100 _@R>iJX[@[5c?hAf9J7SG0
+ImfzOoJ=FI?RQmlZj6XPLE3
+R5
+R6
+R9
+8D:/GITdownload/openmips/chap6/pc_reg.v
+FD:/GITdownload/openmips/chap6/pc_reg.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.846000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/pc_reg.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/pc_reg.v|
+!i113 0
+R8
+vregfile
+R4
+!i10b 1
+!s100 69PXUc>6]3V6f3o=?hNem0
+II:0;_lkggW?ko3UWVLi:71
+R5
+R6
+w1568858542
+8D:/GITdownload/openmips/chap6/regfile.v
+FD:/GITdownload/openmips/chap6/regfile.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.907000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/regfile.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/regfile.v|
+!i113 0
+R8
+vsopc
+R4
+!i10b 1
+!s100 UZ4Cn4OPQQT42boh[M6OA1
+I8X=4nYW7Om`nOmG;zboJg2
+R5
+R6
+R9
+8D:/GITdownload/openmips/chap6/sopc.v
+FD:/GITdownload/openmips/chap6/sopc.v
+L0 3
+R7
+r1
+!s85 0
+31
+!s108 1568955217.973000
+!s107 D:\GITdownload\openmips\chap6\defines.v|D:/GITdownload/openmips/chap6/sopc.v|
+!s90 -reportprogress|300|-work|work|-vopt|-stats=none|D:/GITdownload/openmips/chap6/sopc.v|
+!i113 0
+R8
