@@ -20,6 +20,9 @@ module ex(
     //for madd & msub
     input wire cnt_i,
     input wire [`DoubleRegBus] hilo_temp_i,
+    //div
+    input wire [`DoubleRegBus] div_result_i,
+    input wire div_ready_i, 
 
     output reg [`RegAddrBus] wd_o,  //written reg addr
     output reg wreg_o,
@@ -32,7 +35,12 @@ module ex(
     output reg stallreq,
     //for madd & msub
     output reg cnt_o,
-    output reg [`DoubleRegBus] hilo_temp_o
+    output reg [`DoubleRegBus] hilo_temp_o,
+    //div
+    output reg sign_div_o,
+    output reg [`RegBus] div_opdata1_o,
+    output reg [`RegBus] div_opdata2_o,
+    output reg div_start_o
 );
 
     reg [`RegBus] logic_res;
@@ -182,9 +190,8 @@ module ex(
         end
     end
 
-    /* phase 2.5 : mul
-    * 乘法单独处理，进行补码乘法，对于符号乘法且一正一负的情况，需要对结果取补
-    */
+    // phase 2.5 : mul
+    // 乘法单独处理，进行补码乘法，对于符号乘法且一正一负的情况，需要对结果取补
     wire [`RegBus] reg1_mul;
     wire [`RegBus] reg2_mul;
     wire [`DoubleRegBus] hilo_temp;
@@ -214,43 +221,102 @@ module ex(
         end
     end
 
-    /* phase 2.6.1 : madd and msub
-    */
+    // phase 2.6 : madd and msub
     reg [`DoubleRegBus] hilo_temp_m;
+    reg stall_for_madd_msub;
 
     always @ (*) begin
         if (rst == `RstEnable) begin
             cnt_o <= 2'b00;
             hilo_temp_o <= {`ZeroWord, `ZeroWord};
-            stallreq <= `NoStop;
+            stall_for_madd_msub <= `NoStop;
         end else if ((aluop_i == `EXE_MADD_OP) || (aluop_i == `EXE_MADDU_OP)) begin
             if (cnt_i == 2'b00) begin
                 cnt_o <= 2'b01;
                 hilo_temp_o <= mul_res;
                 hilo_temp_m <= {`ZeroWord, `ZeroWord};
-                stallreq <= `Stop;
+                stall_for_madd_msub <= `Stop;
             end else if (cnt_i == 2'b01) begin
                 cnt_o <= 2'b10;
                 hilo_temp_o <= {`ZeroWord, `ZeroWord};
                 hilo_temp_m <= {HI, LO} + hilo_temp_i;
-                stallreq <= `NoStop;
+                stall_for_madd_msub <= `NoStop;
             end
         end else if ((aluop_i == `EXE_MSUB_OP) || (aluop_i == `EXE_MSUBU_OP)) begin
             if (cnt_i == 2'b00) begin
                 cnt_o <= 2'b01;
                 hilo_temp_o <= ~mul_res + 1;
                 hilo_temp_m <= {`ZeroWord, `ZeroWord};
-                stallreq <= `Stop;
+                stall_for_madd_msub <= `Stop;
             end else if (cnt_i == 2'b01) begin
                 cnt_o <= 2'b10;
                 hilo_temp_o <= {`ZeroWord, `ZeroWord};
                 hilo_temp_m <= {HI, LO} + hilo_temp_i;
-                stallreq <= `NoStop;
+                stall_for_madd_msub <= `NoStop;
             end
         end else begin
             cnt_o <= 2'b00; //back to 00 state
             hilo_temp_o <= {`ZeroWord, `ZeroWord};
-            stallreq <= `NoStop;
+            stall_for_madd_msub <= `NoStop;
+        end
+    end
+
+    // phase 2.7 : div
+    reg stall_for_div;
+
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            sign_div_o <= 1'b0;
+            div_opdata1_o <= `ZeroWord;
+            div_opdata2_o <= `ZeroWord;
+            div_start_o <= `DivStop;
+            stall_for_div <= `NoStop;
+        end else if (aluop_i == `EXE_DIV_OP) begin
+            if (div_ready_i == `DivResultNotReady) begin
+                sign_div_o <= 1'b1;
+                div_opdata1_o <= reg1_i;
+                div_opdata2_o <= reg2_i;
+                div_start_o <= `DivStart;
+                stall_for_div <= `Stop;
+            end else if (div_ready_i == `DivResultReady) begin
+                sign_div_o <= 1'b1;
+                div_opdata1_o <= reg1_i;
+                div_opdata2_o <= reg2_i;
+                div_start_o <= `DivStop;
+                stall_for_div <= `NoStop;
+            end else begin
+                sign_div_o <= 1'b1;
+                div_opdata1_o <= `ZeroWord;
+                div_opdata2_o <= `ZeroWord;
+                div_start_o <= `DivStop;
+                stall_for_div <= `NoStop;
+            end
+        end else if (aluop_i == `EXE_DIVU_OP) begin
+            if (div_ready_i == `DivResultNotReady) begin
+                sign_div_o <= 1'b0;
+                div_opdata1_o <= reg1_i;
+                div_opdata2_o <= reg2_i;
+                div_start_o <= `DivStart;
+                stall_for_div <= `Stop;
+            end else if (div_ready_i == `DivResultReady) begin
+                sign_div_o <= 1'b0;
+                div_opdata1_o <= reg1_i;
+                div_opdata2_o <= reg2_i;
+                div_start_o <= `DivStop;
+                stall_for_div <= `NoStop;
+            end else begin
+                sign_div_o <= 1'b0;
+                div_opdata1_o <= `ZeroWord;
+                div_opdata2_o <= `ZeroWord;
+                div_start_o <= `DivStop;
+                stall_for_div <= `NoStop;
+            end
+        end else begin
+            sign_div_o <= 1'b0;
+            div_opdata1_o <= `ZeroWord;
+            div_opdata2_o <= `ZeroWord;
+            div_start_o <= `DivStop;
+            stall_for_div <= `NoStop;
         end
     end
 
@@ -284,7 +350,12 @@ module ex(
         endcase
     end
 
-    // phase 4 : write into hilo
+    // phase 4 : stall pipline
+    always @ (*) begin
+        stallreq <= stall_for_madd_msub || stall_for_div;
+    end
+
+    // phase 5 : write into hilo
     always @ (*) begin
         if (rst == `RstEnable) begin
             whilo_o <= `WriteDisable;
@@ -310,6 +381,10 @@ module ex(
                 `EXE_MSUB_OP, `EXE_MSUBU_OP : begin
                     whilo_o <= `WriteEnable;
                     {hi_o, lo_o} <= hilo_temp_m;
+                end
+                `EXE_DIV_OP, `EXE_DIVU_OP : begin
+                    whilo_o <= `WriteEnable;
+                    {hi_o, lo_o} <= div_result_i;
                 end
                 default : begin
                     whilo_o <= `WriteDisable;

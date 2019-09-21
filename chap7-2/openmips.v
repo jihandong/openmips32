@@ -80,6 +80,14 @@ module openmips(
     wire exmem_ex_cnt;
     wire [`DoubleRegBus] exmem_ex_hilo_temp;
 
+    //div module
+    wire ex_div_sign_div;
+    wire [`RegBus] ex_div_opdata1;
+    wire [`RegBus] ex_div_opdata2;
+    wire ex_div_start;
+    wire [`DoubleRegBus] div_ex_result;
+    wire div_ex_ready; 
+
     pc_reg pc_reg0(
         .rst(rst),
         .clk(clk),
@@ -181,6 +189,9 @@ module openmips(
         //madd, msub stall
         .cnt_i(exmem_ex_cnt),
         .hilo_temp_i(exmem_ex_hilo_temp),
+        //div
+        .div_result_i(div_ex_result),
+        .div_ready_i(div_ex_ready), 
 
         .wd_o(ex_exmem_wd),
         .wreg_o(ex_exmem_wreg),
@@ -192,7 +203,25 @@ module openmips(
         .stallreq(stallreq_ex),  //stall req
         //madd, msub stall
         .cnt_o(ex_exmem_cnt),
-        .hilo_temp_o(ex_exmem_hilo_temp)
+        .hilo_temp_o(ex_exmem_hilo_temp),
+        //div
+        .sign_div_o(ex_div_sign_div),
+        .div_opdata1_o(ex_div_opdata1),
+        .div_opdata2_o(ex_div_opdata2),
+        .div_start_o(ex_div_start)
+    );
+
+    div div0(
+        .rst(rst),    
+        .clk(clk),
+        .sign_div_i(ex_div_sign_div),
+        .opdata1_i(ex_div_opdata1),
+        .opdata2_i(ex_div_opdata2),
+        .start_i(ex_div_start),
+        .annul_i(1'b0),
+
+        .result_o(div_ex_result),
+        .ready_o(div_ex_ready) 
     );
 
     ex_mem ex_mem0(

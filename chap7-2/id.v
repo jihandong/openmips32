@@ -91,6 +91,17 @@ module id(
                             reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                             wreg_o <= `WriteEnable; wd_o <= rd;
                         end
+                        //div inst
+                        `EXE_DIV : begin
+                            aluop_o <= `EXE_DIV_OP;
+                            reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+                            reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+                        end
+                        `EXE_DIVU : begin
+                            aluop_o <= `EXE_DIVU_OP;
+                            reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+                            reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+                        end                        
                         `EXE_SYNC : begin
                             aluop_o <= `EXE_NOP_OP; alusel_o <= `EXE_RES_NOP;
                         end

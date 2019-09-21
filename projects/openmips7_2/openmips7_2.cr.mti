@@ -47,9 +47,6 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	regfile
 
-} {} {}} D:/GITdownload/openmips/chap7-2/defines.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/defines.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
-
 } {} {}} D:/GITdownload/openmips/chap7-2/mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/mem.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module mem
@@ -71,19 +68,19 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	pc_reg
 
-} {} {}} D:/GITdownload/openmips/chap7-2/ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/ex_mem.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module ex_mem
-
-Top level modules:
-	ex_mem
-
 } {} {}} D:/GITdownload/openmips/chap7-2/openmips.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/openmips.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module openmips
 
 Top level modules:
 	openmips
+
+} {} {}} D:/GITdownload/openmips/chap7-2/ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/ex_mem.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module ex_mem
+
+Top level modules:
+	ex_mem
 
 } {} {}} D:/GITdownload/openmips/chap7-2/openmips_sopc_tb.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/openmips_sopc_tb.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
@@ -92,11 +89,42 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	openmips_sopc_tb
 
-} {} {}} D:/GITdownload/openmips/chap7-2/id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/id.v
+} {} {}} D:/GITdownload/openmips/chap7-2/id.v {0 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/id.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module id
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/id.v(95): near "begin": syntax error, unexpected begin, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
 
-Top level modules:
-	id
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/id.v(100): near "begin": syntax error, unexpected begin, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
 
-} {} {}}
+
+} {4.0 5.0 6.0 7.0} {}} D:/GITdownload/openmips/chap7-2/ex.v {0 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap7-2/ex.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module ex
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(272): near ";": syntax error, unexpected ';'.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(274): near ")": syntax error, unexpected ')'.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(279): near ";": syntax error, unexpected ';'.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(281): near "else": syntax error, unexpected else.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(327): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(329): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(333): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(336): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(339): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(342): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(345): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(348): near "<=": syntax error, unexpected <=, expecting IDENTIFIER or TYPE_IDENTIFIER or NETTYPE_IDENTIFIER.
+
+** Error: (vlog-13069) D:/GITdownload/openmips/chap7-2/ex.v(351): near "end": syntax error, unexpected end.
+
+
+} {4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0 13.0 14.0 15.0 16.0 17.0 18.0 19.0 20.0 21.0 22.0 23.0 24.0 25.0 26.0 27.0 28.0 29.0} {}}
