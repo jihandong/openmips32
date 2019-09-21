@@ -68,9 +68,6 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	sopc
 
-} {} {}} D:/GITdownload/openmips/chap6/defines.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap6/defines.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
-
 } {} {}} D:/GITdownload/openmips/chap6/regfile.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap6/regfile.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module regfile

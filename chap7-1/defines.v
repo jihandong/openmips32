@@ -67,35 +67,53 @@
 `define EXE_SLTIU       6'b001011
 `define EXE_CLZ         6'b100000
 `define EXE_CLO         6'b100001
-`define EXE_MULTU       6'b000010
+//inst mul
+`define EXE_MUL         6'b000010
 `define EXE_MULT        6'b011000
-`define EXE_MUL         6'b011001
+`define EXE_MULTU       6'b011001
 
 //AluOp
 //logic
-`define EXE_NOP_OP  8'b00000000
-`define EXE_AND_OP  8'b00100100
-`define EXE_OR_OP   8'b00100101
-`define EXE_XOR_OP  8'b00100110
-`define EXE_NOR_OP  8'b00100111
-//shift
-`define EXE_SLL_OP  8'b01111100
-`define EXE_SRL_OP  8'b00000010
-`define EXE_SRA_OP  8'b00000011
-//move
-`define EXE_MOVZ_OP 8'b00001010
-`define EXE_MOVN_OP 8'b00001011
-`define EXE_MFHI_OP 8'b00010000
-`define EXE_MTHI_OP 8'b00010001
-`define EXE_MFLO_OP 8'b00010010
-`define EXE_MTLO_OP 8'b00010011
+`define EXE_NOP_OP      8'b00000000
+`define EXE_AND_OP      8'b00100100
+`define EXE_OR_OP       8'b00100101
+`define EXE_XOR_OP      8'b00100110
+`define EXE_NOR_OP      8'b00100111
+//shift 
+`define EXE_SLL_OP      8'b01111100
+`define EXE_SRL_OP      8'b00000010
+`define EXE_SRA_OP      8'b00000011
+//move  
+`define EXE_MOVZ_OP     8'b00001010
+`define EXE_MOVN_OP     8'b00001011
+`define EXE_MFHI_OP     8'b00010000
+`define EXE_MTHI_OP     8'b00010001
+`define EXE_MFLO_OP     8'b00010010
+`define EXE_MTLO_OP     8'b00010011
 //arithmetic
+`define EXE_ADD_OP      8'b00100000
+`define EXE_ADDU_OP     8'b00100001
+`define EXE_SUB_OP      8'b00100010
+`define EXE_SUBU_OP     8'b00100011
+`define EXE_ADDI_OP     8'b01010101
+`define EXE_ADDIU_OP    8'b01010110
+`define EXE_CLZ_OP      8'b10110000
+`define EXE_CLO_OP      8'b10110001
+`define EXE_SLT_OP      8'b00101010
+`define EXE_SLTU_OP     8'b00101011
+//mul
+`define EXE_MULT_OP     8'b00011000
+`define EXE_MULTU_OP    8'b00011001
+`define EXE_MUL_OP      8'b10101001
+
 
 //AluSel
-`define EXE_RES_NOP   3'b000
-`define EXE_RES_LOGIC 3'b001
-`define EXE_RES_SHIFT 3'b010
-`define EXE_RES_MOVE  3'b011
+`define EXE_RES_NOP         3'b000
+`define EXE_RES_LOGIC       3'b001
+`define EXE_RES_SHIFT       3'b010
+`define EXE_RES_MOVE        3'b011
+`define EXE_RES_ARITHMETIC  3'b100
+`define EXE_RES_MUL         3'b101
 
 //指令存储器inst_rom
 `define InstAddrBus 31:0    //地址总线宽度
