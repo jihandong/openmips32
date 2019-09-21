@@ -42,18 +42,14 @@ module openmips(
     wire mem_memwb_wreg;
     wire [`RegBus] mem_memwb_wdata;
     
-    // id & regfile
+    // regfile & Data Hazard
     wire id_reg_reg1read;
     wire id_reg_reg2read;
     wire [`RegAddrBus] id_reg_reg1addr;
     wire [`RegAddrBus] id_reg_reg2addr;
-    
-    // wb & regfile
     wire [`RegAddrBus] memwb_reg_wd;
     wire memwb_reg_wreg;
     wire [`RegBus] memwb_reg_wdata;
-    
-    // regfile & id
     wire [`RegBus] reg_id_rdata1;
     wire [`RegBus] reg_id_rdata2;
 
@@ -79,6 +75,10 @@ module openmips(
     wire [5:0] stallcmd;
     wire stallreq_ex;
     wire stallreq_id;
+    wire ex_exmem_cnt;
+    wire [`DoubleRegBus] ex_exmem_hilo_temp;
+    wire exmem_ex_cnt;
+    wire [`DoubleRegBus] exmem_ex_hilo_temp;
 
     pc_reg pc_reg0(
         .rst(rst),
@@ -178,6 +178,9 @@ module openmips(
         .wb_whilo_i(memwb_hilo_while),
         .wb_hi_i(memwb_hilo_hi),
         .wb_lo_i(memwb_hilo_lo),
+        //madd, msub stall
+        .cnt_i(exmem_ex_cnt),
+        .hilo_temp_i(exmem_ex_hilo_temp),
 
         .wd_o(ex_exmem_wd),
         .wreg_o(ex_exmem_wreg),
@@ -186,7 +189,10 @@ module openmips(
         .whilo_o(ex_exmem_while),
         .hi_o(ex_exmem_hi),
         .lo_o(ex_exmem_lo),
-        .stallreq(stallreq_ex)  //stall req  
+        .stallreq(stallreq_ex),  //stall req
+        //madd, msub stall
+        .cnt_o(ex_exmem_cnt),
+        .hilo_temp_o(ex_exmem_hilo_temp)
     );
 
     ex_mem ex_mem0(
@@ -199,13 +205,19 @@ module openmips(
         .ex_hi(ex_exmem_hi),
         .ex_lo(ex_exmem_lo),
         .stall(stallcmd),   //stall command
+        //madd, msub stall
+        .cnt_i(ex_exmem_cnt),
+        .hilo_temp_i(ex_exmem_hilo_temp),
 
         .mem_wd(exmem_mem_wd),
         .mem_wreg(exmem_mem_wreg),
         .mem_wdata(exmem_mem_wdata),
         .mem_whilo(exmem_mem_while),
         .mem_hi(exmem_mem_hi),
-        .mem_lo(exmem_mem_lo)
+        .mem_lo(exmem_mem_lo),
+        //madd, msub stall
+        .cnt_o(exmem_ex_cnt),
+        .hilo_temp_o(exmem_ex_hilo_temp)
     );
 
     mem mem0(

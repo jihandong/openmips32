@@ -189,22 +189,25 @@ module ex(
     wire [`RegBus] reg2_mul;
     wire [`DoubleRegBus] hilo_temp;
 
-    assign reg1_mul = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) && reg1_i[31]) ?
+    assign reg1_mul = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP) ||
+                        (aluop_i == `EXE_MADD_OP) || (aluop_i == `EXE_MSUB_OP)) && reg1_i[31]) ?
                         (~reg1_i)+1 : reg1_i;
-    assign reg2_mul = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) && reg2_i[31]) ?
+    assign reg2_mul = (((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP) ||
+                        (aluop_i == `EXE_MADD_OP) || (aluop_i == `EXE_MSUB_OP)) && reg2_i[31]) ?
                         (~reg2_i)+1 : reg2_i;
     assign hilo_temp = reg1_mul * reg2_mul;
 
     always @ (*) begin
         if (rst == `RstEnable) begin
             mul_res <= {`ZeroWord, `ZeroWord};
-        end else if ((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP)) begin
+        end else if ((aluop_i == `EXE_MUL_OP) || (aluop_i == `EXE_MULT_OP) ||
+                    (aluop_i == `EXE_MADD_OP) || (aluop_i == `EXE_MSUB_OP)) begin
             if (reg1_i[31] ^ reg2_i[31] == 1'b1) begin
                 mul_res <= (~hilo_temp)+1;
             end else  begin
                 mul_res <= hilo_temp;
             end
-        end else if (aluop_i == `EXE_MULTU_OP) begin
+        end else if ((aluop_i == `EXE_MULTU_OP) || (aluop_i == `EXE_MADDU_OP) || (aluop_i == `EXE_MSUBU_OP)) begin
             mul_res <= hilo_temp;
         end else begin
             mul_res <= {`ZeroWord, `ZeroWord};
@@ -212,8 +215,9 @@ module ex(
     end
 
     /* phase 2.6.1 : madd and msub
-    *
     */
+    reg [`DoubleRegBus] hilo_temp_m;
+
     always @ (*) begin
         if (rst == `RstEnable) begin
             cnt_o <= 2'b00;
@@ -223,20 +227,24 @@ module ex(
             if (cnt_i == 2'b00) begin
                 cnt_o <= 2'b01;
                 hilo_temp_o <= mul_res;
+                hilo_temp_m <= {`ZeroWord, `ZeroWord};
                 stallreq <= `Stop;
-            else if (cnt == 2'b01) begin
+            end else if (cnt_i == 2'b01) begin
                 cnt_o <= 2'b10;
-                hilo_temp_o <= {HI, LO} + hilo_temp_i;
+                hilo_temp_o <= {`ZeroWord, `ZeroWord};
+                hilo_temp_m <= {HI, LO} + hilo_temp_i;
                 stallreq <= `NoStop;
             end
         end else if ((aluop_i == `EXE_MSUB_OP) || (aluop_i == `EXE_MSUBU_OP)) begin
             if (cnt_i == 2'b00) begin
                 cnt_o <= 2'b01;
                 hilo_temp_o <= ~mul_res + 1;
+                hilo_temp_m <= {`ZeroWord, `ZeroWord};
                 stallreq <= `Stop;
-            else if (cnt == 2'b01) begin
+            end else if (cnt_i == 2'b01) begin
                 cnt_o <= 2'b10;
-                hilo_temp_o <= {HI, LO} + hilo_temp_i;
+                hilo_temp_o <= {`ZeroWord, `ZeroWord};
+                hilo_temp_m <= {HI, LO} + hilo_temp_i;
                 stallreq <= `NoStop;
             end
         end else begin
@@ -297,12 +305,11 @@ module ex(
                 end
                 `EXE_MADD_OP, `EXE_MADDU_OP : begin
                     whilo_o <= `WriteEnable;
-                    {hi_o, lo_o} <= hilo_temp_o;
+                    {hi_o, lo_o} <= hilo_temp_m;
                 end
                 `EXE_MSUB_OP, `EXE_MSUBU_OP : begin
                     whilo_o <= `WriteEnable;
-                    {hi_o, lo_o} <= hilo_temp_o
-                    ;
+                    {hi_o, lo_o} <= hilo_temp_m;
                 end
                 default : begin
                     whilo_o <= `WriteDisable;
