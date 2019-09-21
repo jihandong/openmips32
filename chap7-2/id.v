@@ -32,7 +32,9 @@ module id(
     output reg [`RegBus] reg1_o,
     output reg [`RegBus] reg2_o,
     output reg [`RegAddrBus] wd_o, //addr of rd
-    output reg wreg_o //whether rd exist
+    output reg wreg_o, //whether rd exist
+    //stall request
+    output reg stallreq
 );
 
     // phase0 : prepare
@@ -233,6 +235,26 @@ module id(
                             reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
                             reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                             wreg_o <= `WriteEnable; wd_o <= rd;
+                        end
+                        `EXE_MADD  : begin
+                            aluop_o <= `EXE_MADD_OP; alusel_o <= `EXE_RES_MUL;
+                            reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+                            reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+                        end
+                        `EXE_MADDU : begin
+                            aluop_o <= `EXE_MADDU_OP; alusel_o <= `EXE_RES_MUL;
+                            reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+                            reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+                        end
+                        `EXE_MSUB  : begin
+                            aluop_o <= `EXE_MSUB_OP; alusel_o <= `EXE_RES_MUL;
+                            reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+                            reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+                        end
+                        `EXE_MSUBU : begin
+                            aluop_o <= `EXE_MSUBU_OP; alusel_o <= `EXE_RES_MUL;
+                            reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+                            reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
                         end
                         default : begin
                             instvalid <= `InstInvalid;

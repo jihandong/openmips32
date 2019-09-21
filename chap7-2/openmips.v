@@ -75,9 +75,15 @@ module openmips(
     wire [`RegBus] memwb_hilo_hi;
     wire [`RegBus] memwb_hilo_lo;
 
+    //stall wire
+    wire [5:0] stallcmd;
+    wire stallreq_ex;
+    wire stallreq_id;
+
     pc_reg pc_reg0(
         .rst(rst),
         .clk(clk),
+        .stall(stallcmd),   //stall command
 
         .pc(pc),        //output
         .ce(rom_ce_o)   //output
@@ -88,6 +94,7 @@ module openmips(
         .clk(clk),
         .if_pc(pc),
         .if_inst(rom_data_i), //input
+        .stall(stallcmd),   //stall command
 
         .id_pc(ifid_id_pc),
         .id_inst(ifid_id_inst)
@@ -116,7 +123,8 @@ module openmips(
         .reg1_read_o(id_reg_reg1read),
         .reg2_read_o(id_reg_reg2read),
         .reg1_addr_o(id_reg_reg1addr),
-        .reg2_addr_o(id_reg_reg2addr)
+        .reg2_addr_o(id_reg_reg2addr),
+        .stallreq(stallreq_id)  //stall req
     );
 
     regfile regfile0(
@@ -143,6 +151,7 @@ module openmips(
         .id_reg2(id_idex_reg2),
         .id_wd(id_idex_wd),
         .id_wreg(id_idex_wreg),
+        .stall(stallcmd),   //stall command
 
         .ex_aluop(idex_ex_aluop),
         .ex_alusel(idex_ex_alusel),
@@ -176,7 +185,8 @@ module openmips(
         //hilo data hazard
         .whilo_o(ex_exmem_while),
         .hi_o(ex_exmem_hi),
-        .lo_o(ex_exmem_lo)  
+        .lo_o(ex_exmem_lo),
+        .stallreq(stallreq_ex)  //stall req  
     );
 
     ex_mem ex_mem0(
@@ -188,6 +198,7 @@ module openmips(
         .ex_whilo(ex_exmem_while),
         .ex_hi(ex_exmem_hi),
         .ex_lo(ex_exmem_lo),
+        .stall(stallcmd),   //stall command
 
         .mem_wd(exmem_mem_wd),
         .mem_wreg(exmem_mem_wreg),
@@ -223,6 +234,7 @@ module openmips(
         .mem_whilo(mem_memwb_while),
         .mem_hi(mem_memwb_hi),
         .mem_lo(mem_memwb_lo),
+        .stall(stallcmd),   //stall command
 
         .wb_wd(memwb_reg_wd),
         .wb_wreg(memwb_reg_wreg),
@@ -241,6 +253,14 @@ module openmips(
 
         .hi_o(hilo_ex_hi),
         .lo_o(hilo_ex_lo)
+    );
+
+    ctrl ctrl0(
+        .rst(rst),
+        .stallreq_ex(stallreq_ex),
+        .stallreq_id(stallreq_id),
+
+        .stall(stallcmd)
     );
 
 endmodule

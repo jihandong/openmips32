@@ -17,6 +17,9 @@ module ex(
     input wire mem_whilo_i,
     input wire [`RegBus] mem_hi_i,
     input wire [`RegBus] mem_lo_i,
+    //for madd & msub
+    input wire cnt_i,
+    input wire [`DoubleRegBus] hilo_temp_i,
 
     output reg [`RegAddrBus] wd_o,  //written reg addr
     output reg wreg_o,
@@ -24,7 +27,12 @@ module ex(
     //hilo reg
     output reg whilo_o,
     output reg [`RegBus] hi_o,
-    output reg [`RegBus] lo_o 
+    output reg [`RegBus] lo_o, 
+    //stall request
+    output reg stallreq,
+    //for madd & msub
+    output reg cnt_o,
+    output reg [`DoubleRegBus] hilo_temp_o
 );
 
     reg [`RegBus] logic_res;
@@ -203,6 +211,41 @@ module ex(
         end
     end
 
+    /* phase 2.6.1 : madd and msub
+    *
+    */
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            cnt_o <= 2'b00;
+            hilo_temp_o <= {`ZeroWord, `ZeroWord};
+            stallreq <= `NoStop;
+        end else if ((aluop_i == `EXE_MADD_OP) || (aluop_i == `EXE_MADDU_OP)) begin
+            if (cnt_i == 2'b00) begin
+                cnt_o <= 2'b01;
+                hilo_temp_o <= mul_res;
+                stallreq <= `Stop;
+            else if (cnt == 2'b01) begin
+                cnt_o <= 2'b10;
+                hilo_temp_o <= {HI, LO} + hilo_temp_i;
+                stallreq <= `NoStop;
+            end
+        end else if ((aluop_i == `EXE_MSUB_OP) || (aluop_i == `EXE_MSUBU_OP)) begin
+            if (cnt_i == 2'b00) begin
+                cnt_o <= 2'b01;
+                hilo_temp_o <= ~mul_res + 1;
+                stallreq <= `Stop;
+            else if (cnt == 2'b01) begin
+                cnt_o <= 2'b10;
+                hilo_temp_o <= {HI, LO} + hilo_temp_i;
+                stallreq <= `NoStop;
+            end
+        end else begin
+            cnt_o <= 2'b00; //back to 00 state
+            hilo_temp_o <= {`ZeroWord, `ZeroWord};
+            stallreq <= `NoStop;
+        end
+    end
+
     // phase 3 : choose a result (according to alusel_i)
     always @ (*) begin
         wd_o <= wd_i;
@@ -251,6 +294,15 @@ module ex(
                 `EXE_MULT_OP, `EXE_MULTU_OP : begin
                     whilo_o <= `WriteEnable;
                     {hi_o, lo_o} <= mul_res;
+                end
+                `EXE_MADD_OP, `EXE_MADDU_OP : begin
+                    whilo_o <= `WriteEnable;
+                    {hi_o, lo_o} <= hilo_temp_o;
+                end
+                `EXE_MSUB_OP, `EXE_MSUBU_OP : begin
+                    whilo_o <= `WriteEnable;
+                    {hi_o, lo_o} <= hilo_temp_o
+                    ;
                 end
                 default : begin
                     whilo_o <= `WriteDisable;
