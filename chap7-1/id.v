@@ -32,7 +32,9 @@ module id(
     output reg [`RegBus] reg1_o,
     output reg [`RegBus] reg2_o,
     output reg [`RegAddrBus] wd_o, //addr of rd
-    output reg wreg_o //whether rd exist
+    output reg wreg_o, //whether rd exist
+    //stall request
+    output reg stallreq
 );
 
     // phase0 : prepare

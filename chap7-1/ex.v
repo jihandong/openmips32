@@ -24,7 +24,9 @@ module ex(
     //hilo reg
     output reg whilo_o,
     output reg [`RegBus] hi_o,
-    output reg [`RegBus] lo_o 
+    output reg [`RegBus] lo_o, 
+    //stall request
+    output reg stallreq
 );
 
     reg [`RegBus] logic_res;
