@@ -37,15 +37,15 @@ module div(
                         end else begin
                             state <= `DivOn;
                             cnt <= 6'b000000;
-                            if ((sign_div_i == 1'b1) && (opdata1_i[31])) begin
+                            if ((sign_div_i == 1'b1) && opdata1_i[31]) begin
                                 op1_temp = ~opdata1_i + 1;
                             end else begin
                                 op1_temp = opdata1_i;
                             end
-                            if ((sign_div_i == 1'b1) && (opdata2_i[31])) begin
-                                op2_temp = ~opdata1_i + 1;
+                            if ((sign_div_i == 1'b1) && opdata2_i[31]) begin
+                                op2_temp = ~opdata2_i + 1;
                             end else begin
-                                op2_temp = opdata1_i;
+                                op2_temp = opdata2_i;
                             end
                             div_end <= {`ZeroWord, `ZeroWord};
                             div_end[32:1] <= op1_temp;
@@ -59,23 +59,23 @@ module div(
 
                 `DivByZero : begin
                     state <= `DivEnd;
-                    result_o <= {`ZeroWord, `ZeroWord};
+                    div_end <= {`ZeroWord, `ZeroWord};
                 end
 
                 `DivOn : begin
                     if (annul_i == 1'b0) begin
                         if (cnt < `RegWidth) begin
                             if (div_temp[32] == 1'b1) begin
-                                div_end <= {div_end, 1'b0};
+                                div_end <= {div_end[63:0], 1'b0};
                             end else begin
-                                div_end <= {div_temp, div_end, 1'b0};
+                                div_end <= {div_temp[31:0], div_end[31:0], 1'b1};
                             end
                             cnt <= cnt + 1;
                         end else begin
-                            if ((sign_div_i == 1'b1) && (opdata1_i[31] ^ opdata2_i[31] == 1'b1)) begin
+                            if (sign_div_i && (opdata1_i[31] ^ opdata2_i[31] == 1'b1)) begin
                                 div_end[31:0] <= ~div_end[31:0] + 1;
                             end
-                            if ((sign_div_i == 1'b1) && (opdata1_i[31] ^ div_end[64] == 1'b1)) begin
+                            if (sign_div_i && (opdata1_i[31] ^ div_end[64] == 1'b1)) begin
                                 div_end[64:33] <= ~div_end[64:33] + 1;
                             end
                             state <= `DivEnd;
@@ -88,7 +88,7 @@ module div(
 
                 `DivEnd : begin
                     ready_o <= `DivResultReady;
-                    result_o <= div_end;
+                    result_o <= {div_end[64:33], div_end[31:0]};
                     if (start_i == `DivStop) begin //back
                         state <= `DivFree;
                         ready_o <= `DivResultNotReady;
