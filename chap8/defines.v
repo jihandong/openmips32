@@ -33,11 +33,17 @@
 `define DivByZero   2'b01
 `define DivOn       2'b10
 `define DivEnd      2'b11
+//branch
+`define InDelaySlot 1'b1
+`define NotInDelaySlot 1'b0
+`define Branch 1'b1
+`define NotBranch 1'b0
 
 
 //inst op & func
 //inst special
 `define EXE_SPECIAL     6'b000000
+`define EXE_REGIMM      6'b000001
 `define EXE_SPECIAL2    6'b011100
 `define EXE_SYNC        6'b001111
 `define EXE_PREF        6'b110011
@@ -88,6 +94,19 @@
 //div
 `define EXE_DIV         6'b011010
 `define EXE_DIVU        6'b011011
+//branch
+`define EXE_J           6'b000010
+`define EXE_JAL         6'b000011
+`define EXE_JALR        6'b001001
+`define EXE_JR          6'b001000
+`define EXE_BEQ         6'b000100
+`define EXE_BGEZ        5'b00001
+`define EXE_BGEZAL      5'b10001
+`define EXE_BGTZ        6'b000111
+`define EXE_BLEZ        6'b000110
+`define EXE_BLTZ        5'b00000
+`define EXE_BLTZAL      5'b10000
+`define EXE_BNE         6'b000101
 
 
 //AluOp
@@ -130,6 +149,19 @@
 //div
 `define EXE_DIV_OP      8'b00011010
 `define EXE_DIVU_OP     8'b00011011
+//branch
+`define EXE_J_OP        8'b01001111
+`define EXE_JAL_OP      8'b01010000
+`define EXE_JALR_OP     8'b00001001
+`define EXE_JR_OP       8'b00001000
+`define EXE_BEQ_OP      8'b01010001
+`define EXE_BGEZ_OP     8'b01000001
+`define EXE_BGEZAL_OP   8'b01001011
+`define EXE_BGTZ_OP     8'b01010100
+`define EXE_BLEZ_OP     8'b01010011
+`define EXE_BLTZ_OP     8'b01000000
+`define EXE_BLTZAL_OP   8'b01001010
+`define EXE_BNE_OP      8'b01010010
 
 
 //AluSel
@@ -139,6 +171,7 @@
 `define EXE_RES_MOVE        3'b011
 `define EXE_RES_ARITHMETIC  3'b100
 `define EXE_RES_MUL         3'b101
+`define EXE_RES_JUMP_BRANCH 3'b110
 
 //指令存储器inst_rom
 `define InstAddrBus 31:0    //地址总线宽度

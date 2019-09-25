@@ -23,6 +23,9 @@ module ex(
     //div
     input wire [`DoubleRegBus] div_result_i,
     input wire div_ready_i, 
+    //branch
+    input wire is_in_delayslot_o,
+    input wire [`RegBus] link_addr_o,
 
     output reg [`RegAddrBus] wd_o,  //written reg addr
     output reg wreg_o,
@@ -343,6 +346,9 @@ module ex(
             end
             `EXE_RES_MUL : begin
                 wdata_o <= hilo_temp[31:0];
+            end
+            `EXE_RES_JUMP_BRANCH : begin
+                wdata_o <= link_addr_o;
             end
             default : begin
                 wdata_o <= `ZeroWord;

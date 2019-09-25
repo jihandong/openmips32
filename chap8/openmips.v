@@ -71,7 +71,7 @@ module openmips(
     wire [`RegBus] memwb_hilo_hi;
     wire [`RegBus] memwb_hilo_lo;
 
-    //stall wire
+    //chap7 : stall wire
     wire [5:0] stallcmd;
     wire stallreq_ex;
     wire stallreq_id;
@@ -80,7 +80,7 @@ module openmips(
     wire exmem_ex_cnt;
     wire [`DoubleRegBus] exmem_ex_hilo_temp;
 
-    //div module
+    //chap7 : div module
     wire ex_div_sign_div;
     wire [`RegBus] ex_div_opdata1;
     wire [`RegBus] ex_div_opdata2;
@@ -88,10 +88,23 @@ module openmips(
     wire [`DoubleRegBus] div_ex_result;
     wire div_ex_ready; 
 
+    //chap8 : branch
+    wire id_pc_branch_flag;
+    wire [`RegBus] id_pc_branch_target_addr;
+    wire [`RegBus] id_idex_link_addr;
+    wire id_idex_is_in_delayslot;
+    wire id_idex_next_is_in_delayslot;
+    wire [`RegBus] idex_ex_link_addr;
+    wire idex_ex_is_in_delayslot;
+    wire idex_id_next_is_in_delayslot;
+
     pc_reg pc_reg0(
         .rst(rst),
         .clk(clk),
         .stall(stallcmd),   //stall command
+        //branch
+        .branch_target_address_i(id_pc_branch_target_addr),
+        .branch_flag_i(id_pc_branch_flag),
 
         .pc(pc),        //output
         .ce(rom_ce_o)   //output
@@ -121,6 +134,8 @@ module openmips(
         .mem_wreg_i(mem_memwb_wreg),
         .mem_wd_i(mem_memwb_wd),
         .mem_wdata_i(mem_memwb_wdata),
+        //branch
+        .is_in_delayslot_i(idex_id_next_is_in_delayslot),
 
         .aluop_o(id_idex_aluop),
         .alusel_o(id_idex_alusel),
@@ -132,7 +147,13 @@ module openmips(
         .reg2_read_o(id_reg_reg2read),
         .reg1_addr_o(id_reg_reg1addr),
         .reg2_addr_o(id_reg_reg2addr),
-        .stallreq(stallreq_id)  //stall req
+        .stallreq(stallreq_id),  //stall req
+        //branch
+        .is_in_delayslot_o(id_idex_is_in_delayslot),
+        .link_addr_o(id_idex_link_addr),
+        .next_inst_in_delayslot_o(id_idex_next_is_in_delayslot),
+        .branch_target_address_o(id_pc_branch_target_addr),
+        .branch_flag_o(id_pc_branch_flag)
     );
 
     regfile regfile0(
@@ -160,13 +181,21 @@ module openmips(
         .id_wd(id_idex_wd),
         .id_wreg(id_idex_wreg),
         .stall(stallcmd),   //stall command
+        //branch
+        .id_link_address(id_idex_link_addr),
+        .id_is_in_delayslot(id_idex_is_in_delayslot),
+        .next_inst_in_delayslot_i(id_idex_next_is_in_delayslot),
 
         .ex_aluop(idex_ex_aluop),
         .ex_alusel(idex_ex_alusel),
         .ex_reg1(idex_ex_reg1),
         .ex_reg2(idex_ex_reg2),
         .ex_wd(idex_ex_wd),
-        .ex_wreg(idex_ex_wreg)
+        .ex_wreg(idex_ex_wreg),
+        //branch
+        .ex_link_address(idex_ex_link_addr),
+        .ex_is_in_delayslot(idex_ex_is_in_delayslot),
+        .is_in_delayslot_o(idex_id_next_is_in_delayslot)
     );
 
     ex ex0(
@@ -192,6 +221,9 @@ module openmips(
         //div
         .div_result_i(div_ex_result),
         .div_ready_i(div_ex_ready), 
+        //branch
+        .is_in_delayslot_o(idex_ex_is_in_delayslot),
+        .link_addr_o(idex_ex_link_addr),
 
         .wd_o(ex_exmem_wd),
         .wreg_o(ex_exmem_wreg),
