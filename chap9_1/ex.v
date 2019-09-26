@@ -26,7 +26,7 @@ module ex(
     //jump-branch
     input wire is_in_delayslot_o,
     input wire [`RegBus] link_addr_o,
-    //load-save
+    //load-store
     input wire [`RegBus] inst_i,
 
     output reg [`RegAddrBus] wd_o,  //written reg addr
@@ -46,7 +46,7 @@ module ex(
     output reg [`RegBus] div_opdata1_o,
     output reg [`RegBus] div_opdata2_o,
     output reg div_start_o,
-    //load-save
+    //load-store
     output wire [`AluOpBus] aluop_o,
     output wire [`RegBus] mem_addr_o,
     output wire [`RegBus] reg2_o

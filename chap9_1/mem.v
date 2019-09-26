@@ -25,7 +25,7 @@ module mem(
     output wire mem_we_o,
     output reg [3:0] mem_sel_o,
     output reg [`RegBus] mem_data_o,
-    output reg mem_ce_o  
+    output reg mem_ce_o
 );
 
     wire [`RegBus] zero32;
@@ -55,7 +55,7 @@ module mem(
             lo_o <= lo_i;
             mem_addr_o <= `ZeroWord;
             mem_we <= `WriteDisable;
-            mem_sel_o <= 4'b0000;
+            mem_sel_o <= 4'b1111;
             mem_data_o <= `ZeroWord;
             mem_ce_o <= `ChipDisable;
             case(aluop_i)
@@ -120,7 +120,7 @@ module mem(
                             wdata_o <= {{16{mem_data_i[31]}}, mem_data_i[31:16]};
                             mem_sel_o <= 4'b1100;
                         end        
-                        2'b01 : begin
+                        2'b10 : begin
                             wdata_o <= {{16{mem_data_i[15]}}, mem_data_i[15:0]};
                             mem_sel_o <= 4'b0011;
                         end
@@ -138,7 +138,7 @@ module mem(
                             wdata_o <= {{16{1'b0}}, mem_data_i[31:16]};
                             mem_sel_o <= 4'b1100;
                         end        
-                        2'b01 : begin
+                        2'b10 : begin
                             wdata_o <= {{16{1'b0}}, mem_data_i[15:0]};
                             mem_sel_o <= 4'b0011;
                         end
@@ -151,7 +151,7 @@ module mem(
                     mem_addr_o <= mem_addr_i;
                     mem_we <= `WriteDisable;
                     mem_sel_o <= 4'b1111;
-                    mem_data_o <= mem_data_i;
+                    wdata_o <= mem_data_i;
                     mem_ce_o <= `ChipEnable;
                 end
                 `EXE_LWL_OP : begin
@@ -172,7 +172,7 @@ module mem(
 						2'b11:	begin
 							wdata_o <= {mem_data_i[7:0],reg2_i[23:0]};	
 						end
-						default:	begin
+						default:	begin   
 							wdata_o <= `ZeroWord;
 						end
 					endcase				
@@ -232,7 +232,7 @@ module mem(
                         2'b00:	begin
 							mem_sel_o <= 4'b1100;
 						end
-						2'b01:	begin
+						2'b10:	begin
 							mem_sel_o <= 4'b0011;
 						end
 						default:	begin
@@ -240,7 +240,7 @@ module mem(
 						end
                     endcase
                 end
-                `EXE_SH_OP : begin
+                `EXE_SW_OP : begin
                     mem_addr_o <= mem_addr_i;
                     mem_we <= `WriteEnable;
                     mem_data_o <= reg2_i;

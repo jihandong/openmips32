@@ -44,7 +44,7 @@ module id(
     output reg [`RegBus] branch_target_address_o,
     output reg branch_flag_o,
     //load-store
-    output wire inst_o
+    output wire [`InstBus] inst_o
 );
 
     // phase0 : prepare
@@ -134,7 +134,6 @@ module id(
                         `EXE_SYNC : begin
                             aluop_o <= `EXE_NOP_OP; alusel_o <= `EXE_RES_NOP;
                         end
-
                         //shift inst
                         `EXE_SLL : begin
                             aluop_o <= `EXE_SLL_OP; alusel_o <= `EXE_RES_SHIFT;
@@ -471,7 +470,7 @@ module id(
 			    	    next_inst_in_delayslot_o <= `InDelaySlot;		  	
 			        end
                 end
-                //load-save inst
+                //load-store inst
                 `EXE_LB : begin
 		  			aluop_o <= `EXE_LB_OP; alusel_o <= `EXE_RES_LOAD_STORE;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
