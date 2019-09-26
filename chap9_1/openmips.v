@@ -160,6 +160,8 @@ module openmips(
         .mem_wdata_i(mem_memwb_wdata),
         //branch
         .is_in_delayslot_i(idex_id_next_is_in_delayslot),
+        //chap 9 : load relate
+        .ex_aluop_i(ex_exmem_aluop),
 
         .aluop_o(id_idex_aluop),
         .alusel_o(id_idex_alusel),

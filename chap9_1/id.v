@@ -21,6 +21,8 @@ module id(
     input wire [`RegAddrBus] mem_wd_i,
     input wire [`RegBus] mem_wdata_i,
     input wire is_in_delayslot_i, //branch
+    //chap 9 : load relate
+    input wire [`AluOpBus] ex_aluop_i,
 
     
     //addr of rs & rt, send to regfile
@@ -36,7 +38,7 @@ module id(
     output reg [`RegAddrBus] wd_o, //addr of rd
     output reg wreg_o, //whether rd exist
     //stall request
-    output reg stallreq,
+    output wire stallreq,
     //branch
     output reg is_in_delayslot_o,
     output reg [`RegBus] link_addr_o,
@@ -67,6 +69,44 @@ module id(
 
     //load-save
     assign inst_o = inst_i;
+
+    //load relate
+    reg stallreq_for_reg1_loadrelate;
+    reg stallreq_for_reg2_loadrelate;
+    wire pre_inst_is_load;
+
+    assign pre_inst_is_load = ((ex_aluop_i == `EXE_LB_OP) || 
+  								(ex_aluop_i == `EXE_LBU_OP) ||
+  								(ex_aluop_i == `EXE_LH_OP) ||
+  								(ex_aluop_i == `EXE_LHU_OP) ||
+  								(ex_aluop_i == `EXE_LW_OP) ||
+  								(ex_aluop_i == `EXE_LWR_OP) ||
+  								(ex_aluop_i == `EXE_LWL_OP) ||
+  								(ex_aluop_i == `EXE_LL_OP) ||
+  								(ex_aluop_i == `EXE_SC_OP)) ? 1'b1 : 1'b0;
+    
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            stallreq_for_reg1_loadrelate <= `NoStop; 
+        end else if (pre_inst_is_load && (ex_wd_i == reg1_addr_o) && (reg1_read_o == `ReadEnable)) begin
+            stallreq_for_reg1_loadrelate <= `Stop;
+        end else begin
+            stallreq_for_reg1_loadrelate <= `NoStop; 
+        end
+    end
+
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            stallreq_for_reg2_loadrelate <= `NoStop; 
+        end else if (pre_inst_is_load && (ex_wd_i == reg2_addr_o) && (reg2_read_o == `ReadEnable)) begin
+            stallreq_for_reg2_loadrelate <= `Stop;
+        end else begin
+            stallreq_for_reg2_loadrelate <= `NoStop; 
+        end
+    end
+
+    assign stallreq = stallreq_for_reg1_loadrelate | stallreq_for_reg2_loadrelate;
+
 
     // phase1 : decode the inst
     always @ (*) begin

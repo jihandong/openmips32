@@ -1,4 +1,11 @@
-D:/GITdownload/openmips/chap9_1/pc_reg.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/pc_reg.v
+D:/GITdownload/openmips/chap9_1/mem_wb.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/mem_wb.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module mem_wb
+
+Top level modules:
+	mem_wb
+
+} {} {}} D:/GITdownload/openmips/chap9_1/pc_reg.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/pc_reg.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module pc_reg
 
@@ -39,13 +46,6 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 
 Top level modules:
 	ex
-
-} {} {}} D:/GITdownload/openmips/chap9_1/id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/id.v
-Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
--- Compiling module id
-
-Top level modules:
-	id
 
 } {} {}} D:/GITdownload/openmips/chap9_1/defines.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/defines.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
