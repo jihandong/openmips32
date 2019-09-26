@@ -114,6 +114,12 @@ module openmips(
     wire [`AluOpBus] exmem_mem_aluop;
     wire [`RegBus] exmem_mem_mem_addr;
     wire [`RegBus] exmem_mem_reg2;
+    //chap9 : ll sc
+    wire mem_memwb_we;
+    wire mem_memwb_value;
+    wire memwb_LLbitreg_we;
+    wire memwb_LLbitreg_value;
+    wire LLbitreg_mem_LLbit;
 
 
     pc_reg pc_reg0(
@@ -332,6 +338,10 @@ module openmips(
         .mem_addr_i(exmem_mem_mem_addr),
         .reg2_i(exmem_mem_reg2),
         .mem_data_i(ram_data_i),    //input
+        //chap 9 : load store LLbit
+        .LLbit_i(LLbitreg_mem_LLbit),
+        .wb_LLbit_we_i(memwb_LLbitreg_we),
+        .wb_LLbit_value_i(memwb_LLbitreg_value),
 
         .wd_o(mem_memwb_wd),
         .wreg_o(mem_memwb_wreg),
@@ -344,7 +354,10 @@ module openmips(
         .mem_data_o(ram_data_o),
         .mem_sel_o(ram_sel_o),
         .mem_we_o(ram_we_o),
-        .mem_ce_o(ram_ce_o)
+        .mem_ce_o(ram_ce_o),
+        //chap 9 : load store LLbit
+        .LLbit_we_o(mem_memwb_we),
+        .LLbit_value_o(mem_memwb_value)
     );
 
     mem_wb mem_wb0(
@@ -357,13 +370,19 @@ module openmips(
         .mem_hi(mem_memwb_hi),
         .mem_lo(mem_memwb_lo),
         .stall(stallcmd),   //stall command
+        //ll sc
+        .mem_LLbit_we(mem_memwb_we),
+        .mem_LLbit_value(mem_memwb_value),
 
         .wb_wd(memwb_reg_wd),
         .wb_wreg(memwb_reg_wreg),
         .wb_wdata(memwb_reg_wdata),
         .wb_whilo(memwb_hilo_while),
         .wb_hi(memwb_hilo_hi),
-        .wb_lo(memwb_hilo_lo)
+        .wb_lo(memwb_hilo_lo),
+        //ll sc
+        .wb_LLbit_we(memwb_LLbitreg_we),
+        .wb_LLbit_value(memwb_LLbitreg_value)
     );
 
     hilo_reg hilo_reg0(
@@ -384,5 +403,15 @@ module openmips(
 
         .stall(stallcmd)
     );
+
+    LLbit_reg LLbit_reg0(
+        .rst(rst),
+        .clk(clk),
+        .we(memwb_LLbitreg_we),
+        .LLbit_i(memwb_LLbitreg_value),
+        //.flush(),
+
+        .LLbit_o(LLbitreg_mem_LLbit)
+);
 
 endmodule

@@ -496,11 +496,6 @@ module id(
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
 					wreg_o <= `WriteEnable;	wd_o <= rt;
 				end
-				`EXE_LL : begin
-		  		    aluop_o <= `EXE_LL_OP; alusel_o <= `EXE_RES_LOAD_STORE;
-                    reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
-					wreg_o <= `WriteEnable;	wd_o <= rt;
-				end
 				`EXE_LWL : begin
 		  		    aluop_o <= `EXE_LWL_OP; alusel_o <= `EXE_RES_LOAD_STORE;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
@@ -537,6 +532,17 @@ module id(
 		  		    aluop_o <= `EXE_SWR_OP; alusel_o <= `EXE_RES_LOAD_STORE;
                     reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
                     reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+				end
+                `EXE_LL : begin
+		  		    aluop_o <= `EXE_LL_OP; alusel_o <= `EXE_RES_LOAD_STORE;
+                    reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+					wreg_o <= `WriteEnable;	wd_o <= rt;
+				end
+                `EXE_SC : begin
+		  		    aluop_o <= `EXE_SC_OP; alusel_o <= `EXE_RES_LOAD_STORE;
+                    reg1_read_o <= `ReadEnable; reg1_addr_o <= rs;
+					reg2_read_o <= `ReadEnable; reg2_addr_o <= rt;
+                    wreg_o <= `WriteEnable;	wd_o <= rt;
 				end
                 default : begin
                     instvalid <= `InstInvalid;

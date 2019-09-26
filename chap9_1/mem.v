@@ -13,6 +13,10 @@ module mem(
     input wire [`RegBus] mem_addr_i,
     input wire [`RegBus] reg2_i,   
     input wire [`RegBus] mem_data_i,
+    //ll-sc
+    input wire LLbit_i,
+    input wire wb_LLbit_we_i,
+    input wire wb_LLbit_value_i,
 
     output reg [`RegAddrBus] wd_o,
     output reg wreg_o,
@@ -25,13 +29,28 @@ module mem(
     output wire mem_we_o,
     output reg [3:0] mem_sel_o,
     output reg [`RegBus] mem_data_o,
-    output reg mem_ce_o
+    output reg mem_ce_o,
+    //ll-sc
+    output reg LLbit_we_o,
+    output reg LLbit_value_o
 );
 
     wire [`RegBus] zero32;
     reg mem_we;
     assign mem_we_o = mem_we;
     assign zero32 = `ZeroWord;
+
+    // fresh LLbit
+    reg LLbit;
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            LLbit <= 1'b0;
+        end else if (wb_LLbit_we_i == `WriteEnable) begin
+            LLbit <= wb_LLbit_value_i;
+        end else begin
+            LLbit <= LLbit_i;
+        end
+    end
 
     always @ (*) begin
         if (rst == `RstEnable) begin
@@ -46,6 +65,8 @@ module mem(
             mem_sel_o <= 4'b0000;
             mem_data_o <= `ZeroWord;
             mem_ce_o <= `ChipDisable;
+            LLbit_we_o <= `WriteDisable;
+            LLbit_value_o <= 1'b0;
         end else begin
             wd_o <= wd_i;
             wreg_o <= wreg_i;
@@ -58,6 +79,8 @@ module mem(
             mem_sel_o <= 4'b1111;
             mem_data_o <= `ZeroWord;
             mem_ce_o <= `ChipDisable;
+            LLbit_we_o <= `WriteDisable;
+            LLbit_value_o <= 1'b0;
             case(aluop_i)
                 `EXE_LB_OP : begin
                     mem_addr_o <= mem_addr_i;
@@ -298,7 +321,30 @@ module mem(
 							mem_sel_o <= 4'b0000;
 						end
 					endcase											
-				end 
+				end
+                `EXE_LL_OP : begin
+                    mem_addr_o <= mem_addr_i;
+                    mem_we <= `WriteDisable;
+                    mem_sel_o <= 4'b1111;
+                    wdata_o <= mem_data_i;
+                    mem_ce_o <= `ChipEnable;
+                    LLbit_we_o <= `WriteEnable;
+                    LLbit_value_o <= 1'b1;
+                end
+                `EXE_SC_OP : begin
+                    if (LLbit == 1'b1) begin
+                        mem_addr_o <= mem_addr_i;
+                        mem_we <= `WriteEnable;
+                        mem_data_o <= reg2_i;
+                        mem_sel_o <= 4'b1111;
+                        mem_ce_o <= `ChipEnable;
+                        LLbit_we_o <= `WriteEnable;
+                        LLbit_value_o <= 1'b0;
+                        wdata_o <= 32'b1;
+                    end else begin
+                        wdata_o <= 32'b0;
+                    end
+                end
                 default : begin
                 end
             endcase
