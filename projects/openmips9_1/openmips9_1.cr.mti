@@ -19,6 +19,13 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 Top level modules:
 	id_ex
 
+} {} {}} D:/GITdownload/openmips/chap9_1/openmips.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/openmips.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module openmips
+
+Top level modules:
+	openmips
+
 } {} {}} D:/GITdownload/openmips/chap9_1/ex_mem.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/ex_mem.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 -- Compiling module ex_mem
@@ -39,6 +46,13 @@ Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
 
 Top level modules:
 	openmips_sopc_tb
+
+} {} {}} D:/GITdownload/openmips/chap9_1/id.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/id.v
+Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
+-- Compiling module id
+
+Top level modules:
+	id
 
 } {} {}} D:/GITdownload/openmips/chap9_1/ex.v {1 {vlog -work work -vopt -stats=none D:/GITdownload/openmips/chap9_1/ex.v
 Model Technology ModelSim SE-64 vlog 10.4 Compiler 2014.12 Dec  3 2014
