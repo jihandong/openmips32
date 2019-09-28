@@ -139,17 +139,42 @@ module openmips(
     wire [4:0]        ex_cp0reg_cp0_reg_read_addr;
     wire [`RegBus]    cp0reg_ex_cp0_reg_data;
 
+    //chap11 : exception
+    wire                    flush;
+    wire [`RegBus]          new_pc;
+    wire [31:0]             id_idex_excepttype;
+    wire [`InstAddrBus]     id_idex_current_inst_addr;
+    wire [31:0]             idex_ex_excepttype;
+    wire [`InstAddrBus]     idex_ex_current_inst_addr;
+    wire [31:0]             ex_exmem_excepttype;
+    wire [`InstAddrBus]     ex_exmem_current_inst_addr;
+    wire                    ex_exmem_is_in_delayslot;
+    wire [31:0]             exmem_mem_excepttype;
+    wire [`InstAddrBus]     exmem_mem_current_inst_addr;
+    wire                    exmem_mem_is_in_delayslot;
+    wire [31:0]             mem_cp0reg_excepttype;
+    wire [`InstAddrBus]     mem_cp0reg_current_inst_addr;
+    wire                    mem_cp0reg_is_in_delayslot;
+    wire [`RegBus]          mem_ctrl_cp0_epc;
+    wire [`RegBus]          cp0reg_mem_status,
+    wire [`RegBus]          cp0reg_mem_cause,
+    wire [`RegBus]          cp0reg_mem_epc,
+
 
     pc_reg pc_reg0(
         .rst(rst),
         .clk(clk),
         .stall(stallcmd),   //stall command
+        .pc(pc),        //output
+        .ce(rom_ce_o),   //output
+
         //branch
         .branch_target_address_i(id_pc_branch_target_addr),
         .branch_flag_i(id_pc_branch_flag),
 
-        .pc(pc),        //output
-        .ce(rom_ce_o)   //output
+        //chap11 : exception
+        .flush(flush),
+	    .new_pc(new_pc)
     );
 
     if_id if_id0(
@@ -158,9 +183,11 @@ module openmips(
         .if_pc(pc),
         .if_inst(rom_data_i), //input
         .stall(stallcmd),   //stall command
-
         .id_pc(ifid_id_pc),
-        .id_inst(ifid_id_inst)
+        .id_inst(ifid_id_inst),
+
+        //chap11 : exception
+        .flush(flush)
     );
 
     id id0(
@@ -169,18 +196,6 @@ module openmips(
         .inst_i(ifid_id_inst),
         .reg1_data_i(reg_id_rdata1),
         .reg2_data_i(reg_id_rdata2),
-        //Data Harzard Bypass
-        .ex_wreg_i(ex_exmem_wreg),
-        .ex_wd_i(ex_exmem_wd),
-        .ex_wdata_i(ex_exmem_wdata),
-        .mem_wreg_i(mem_memwb_wreg),
-        .mem_wd_i(mem_memwb_wd),
-        .mem_wdata_i(mem_memwb_wdata),
-        //branch
-        .is_in_delayslot_i(idex_id_next_is_in_delayslot),
-        //chap 9 : load relate
-        .ex_aluop_i(ex_exmem_aluop),
-
         .aluop_o(id_idex_aluop),
         .alusel_o(id_idex_alusel),
         .reg1_o(id_idex_reg1),
@@ -192,14 +207,32 @@ module openmips(
         .reg1_addr_o(id_reg_reg1addr),
         .reg2_addr_o(id_reg_reg2addr),
         .stallreq(stallreq_id),  //stall req
+
+        //Data Harzard Bypass
+        .ex_wreg_i(ex_exmem_wreg),
+        .ex_wd_i(ex_exmem_wd),
+        .ex_wdata_i(ex_exmem_wdata),
+        .mem_wreg_i(mem_memwb_wreg),
+        .mem_wd_i(mem_memwb_wd),
+        .mem_wdata_i(mem_memwb_wdata),
+        
         //branch
+        .is_in_delayslot_i(idex_id_next_is_in_delayslot),
         .is_in_delayslot_o(id_idex_is_in_delayslot),
         .link_addr_o(id_idex_link_addr),
         .next_inst_in_delayslot_o(id_idex_next_is_in_delayslot),
         .branch_target_address_o(id_pc_branch_target_addr),
         .branch_flag_o(id_pc_branch_flag),
+
+        //chap 9 : load relate
+        .ex_aluop_i(ex_exmem_aluop),
+
         //load-store
-        .inst_o(id_idex_inst)
+        .inst_o(id_idex_inst)，
+
+        //chap11 : exception
+        .excepttype_o(id_idex_excepttype),
+		.current_inst_addr_o(id_idex_current_inst_addr)
     );
 
     regfile regfile0(
@@ -227,25 +260,31 @@ module openmips(
         .id_wd(id_idex_wd),
         .id_wreg(id_idex_wreg),
         .stall(stallcmd),   //stall command
-        //branch
-        .id_link_address(id_idex_link_addr),
-        .id_is_in_delayslot(id_idex_is_in_delayslot),
-        .next_inst_in_delayslot_i(id_idex_next_is_in_delayslot),
-        //chap 9 : load store
-        .id_inst(id_idex_inst),
-
         .ex_aluop(idex_ex_aluop),
         .ex_alusel(idex_ex_alusel),
         .ex_reg1(idex_ex_reg1),
         .ex_reg2(idex_ex_reg2),
         .ex_wd(idex_ex_wd),
         .ex_wreg(idex_ex_wreg),
+
         //branch
+        .id_link_address(id_idex_link_addr),
+        .id_is_in_delayslot(id_idex_is_in_delayslot),
+        .next_inst_in_delayslot_i(id_idex_next_is_in_delayslot),
         .ex_link_address(idex_ex_link_addr),
         .ex_is_in_delayslot(idex_ex_is_in_delayslot),
         .is_in_delayslot_o(idex_id_next_is_in_delayslot),
+
         //chap 9 : load store
-        .ex_inst(idex_ex_inst)
+        .id_inst(id_idex_inst),
+        .ex_inst(idex_ex_inst),
+
+        //chap11 : exception
+        .flush(flush),
+        .id_excepttype(id_idex_excepttype),
+		.id_current_inst_addr(id_idex_current_inst_addr),
+        .ex_excepttype(idex_ex_excepttype),
+		.ex_current_inst_addr(idex_ex_current_inst_addr)
     );
 
     ex ex0(
@@ -289,8 +328,8 @@ module openmips(
         .div_start_o(ex_div_start),
 
         //branch
-        .is_in_delayslot_o(idex_ex_is_in_delayslot),
-        .link_addr_o(idex_ex_link_addr),
+        .is_in_delayslot_i(idex_ex_is_in_delayslot),
+        .link_addr_i(idex_ex_link_addr),
 
         //chap 9 : load store
         .inst_i(idex_ex_inst),
@@ -309,7 +348,14 @@ module openmips(
 	    .cp0_reg_read_addr_o(ex_cp0reg_cp0_reg_read_addr),
         .cp0_reg_we_o(ex_exmem_cp0_reg_we),
 	    .cp0_reg_write_addr_o(ex_exmem_cp0_reg_write_addr),
-	    .cp0_reg_data_o(ex_exmem_cp0_reg_data)
+	    .cp0_reg_data_o(ex_exmem_cp0_reg_data),
+
+        //chap11 : exception
+        .excepttype_i(id_idex_excepttype),
+		.current_inst_addr_i(id_idex_current_inst_addr),
+        .excepttype_o(ex_exmem_excepttype),
+		.current_inst_addr_o(ex_exmem_current_inst_addr),
+        .is_in_delayslot_o(ex_exmem_is_in_delayslot)
     );
 
     div div0(
@@ -362,7 +408,16 @@ module openmips(
 	    .ex_cp0_reg_data(ex_exmem_cp0_reg_data),
         .mem_cp0_reg_we(exmem_mem_cp0_reg_we),
 	    .mem_cp0_reg_write_addr(exmem_mem_cp0_reg_write_addr),
-	    .mem_cp0_reg_data(exmem_mem_cp0_reg_data)
+	    .mem_cp0_reg_data(exmem_mem_cp0_reg_data),
+
+        //chap11 : exception
+        .flush(flush),
+        .ex_excepttype(ex_exmem_excepttype),
+		.ex_current_inst_addr(ex_exmem_current_inst_addr),
+        .ex_is_in_delayslot(ex_exmem_is_in_delayslot),
+        .mem_excepttype(exmem_mem_excepttype),
+		.mem_current_inst_addr(exmem_mem_current_inst_addr),
+        .mem_is_in_delayslot(exmem_mem_is_in_delayslot)
     );
 
     mem mem0(
@@ -406,7 +461,22 @@ module openmips(
 	    .cp0_reg_data_i(exmem_mem_cp0_reg_data),
         .cp0_reg_we_o(mem_memwb_cp0_reg_we),
 	    .cp0_reg_write_addr_o(mem_memwb_cp0_reg_write_addr),
-	    .cp0_reg_data_o(mem_memwb_cp0_reg_data)
+	    .cp0_reg_data_o(mem_memwb_cp0_reg_data),
+
+        //chap11 : exception
+        .cp0_status_i(cp0reg_mem_status),
+        .cp0_cause_i(cp0reg_mem_cause),
+        .cp0_epc_i(cp0reg_mem_epc),
+        .wb_cp0_reg_we(memwb_cp0reg_cp0_reg_we),
+	    .wb_cp0_reg_write_addr(memwb_cp0reg_cp0_reg_write_addr),
+	    .wb_cp0_reg_data(memwb_cp0reg_cp0_reg_data),
+        .excepttype_i(exmem_mem_excepttype),
+		.current_inst_addr_i(exmem_mem_current_inst_addr),
+        .is_in_delayslot_i(exmem_mem_is_in_delayslot),
+        .excepttype_o(mem_cp0reg_excepttype),
+		.current_inst_addr_o(mem_cp0reg_current_inst_addr),
+        .is_in_delayslot_o(mem_cp0reg_is_in_delayslot),
+        .cp0_epc_i(mem_ctrl_cp0_epc)
     );
 
     mem_wb mem_wb0(
@@ -438,7 +508,10 @@ module openmips(
 	    .mem_cp0_reg_data(mem_memwb_cp0_reg_data),
         .wb_cp0_reg_we(memwb_cp0reg_cp0_reg_we),
 	    .wb_cp0_reg_write_addr(memwb_cp0reg_cp0_reg_write_addr),
-	    .wb_cp0_reg_data(memwb_cp0reg_cp0_reg_data)
+	    .wb_cp0_reg_data(memwb_cp0reg_cp0_reg_data),
+
+        //chap11 : exceptinon
+        .flush(flush)
     );
 
     hilo_reg hilo_reg0(
@@ -465,9 +538,10 @@ module openmips(
         .clk(clk),
         .we(memwb_LLbitreg_we),
         .LLbit_i(memwb_LLbitreg_value),
-        //.flush(),
+        .LLbit_o(LLbitreg_mem_LLbit),
 
-        .LLbit_o(LLbitreg_mem_LLbit)
+        //chap11 : exceptinon
+        .flush(flush)
     );
 
     cp0_reg cp0reg0(
@@ -481,12 +555,17 @@ module openmips(
         .data_o(cp0reg_ex_cp0_reg_data),
         //.count_o(),
         //.compare_o(),
-        //.status_o(),
-        //.cause_o(),
-        //.epc_o(),
+        .status_o(cp0reg_mem_status),
+        .cause_o(cp0reg_mem_cause),
+        .epc_o(cp0reg_mem_epc),
         //.config_o(),
         //.prid_o(),
-        .timer_int_o(timer_int_o)
+        .timer_int_o(timer_int_o),
+
+        //chap11 : exceptinon
+        .excepttype_i(mem_cp0reg_excepttype),
+		.current_inst_addr_i(mem_cp0reg_current_inst_addr),
+        .is_in_delayslot_i(mem_cp0reg_is_in_delayslot)
     );
 
 endmodule

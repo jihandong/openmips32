@@ -23,17 +23,32 @@ module mem_wb(
     output reg wb_LLbit_we,
     output reg wb_LLbit_value,
 
-    //CP0
-    input wire mem_cp0_reg_we,
-	input wire [4:0] mem_cp0_reg_write_addr,
-	input wire [`RegBus] mem_cp0_reg_data,
-    output reg wb_cp0_reg_we,
-	output reg [4:0] wb_cp0_reg_write_addr,
-	output reg [`RegBus] wb_cp0_reg_data
+    //chap10 : CP0
+    input wire              mem_cp0_reg_we,
+	input wire [4:0]        mem_cp0_reg_write_addr,
+	input wire [`RegBus]    mem_cp0_reg_data,
+    output reg              wb_cp0_reg_we,
+	output reg [4:0]        wb_cp0_reg_write_addr,
+	output reg [`RegBus]    wb_cp0_reg_data,
+
+    //chap11 : exception
+    input wire flush
 );
 
     always @ (posedge clk) begin
         if (rst == `RstEnable) begin
+            wb_wd <= `NOPRegAddr;
+            wb_wreg <= `WriteDisable;
+            wb_wdata <= `ZeroWord;
+            wb_whilo <= `WriteDisable;
+            wb_hi <= `ZeroWord;
+            wb_lo <= `ZeroWord;
+            wb_LLbit_we <= `WriteDisable;
+            wb_LLbit_value <= 1'b0;
+            wb_cp0_reg_we <= `WriteDisable;
+	        wb_cp0_reg_write_addr <= 5'b00000;
+	        wb_cp0_reg_data <= `ZeroWord;
+        end else if (flush == 1'b1) begin //clear pipline
             wb_wd <= `NOPRegAddr;
             wb_wreg <= `WriteDisable;
             wb_wdata <= `ZeroWord;

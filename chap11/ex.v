@@ -35,35 +35,42 @@ module ex(
     output reg [`DoubleRegBus] hilo_temp_o,
 
     //div
-    input wire [`DoubleRegBus] div_result_i,
-    input wire div_ready_i,
-    output reg sign_div_o,
-    output reg [`RegBus] div_opdata1_o,
-    output reg [`RegBus] div_opdata2_o,
-    output reg div_start_o,
+    input wire [`DoubleRegBus]  div_result_i,
+    input wire                  div_ready_i,
+    output reg                  sign_div_o,
+    output reg [`RegBus]        div_opdata1_o,
+    output reg [`RegBus]        div_opdata2_o,
+    output reg                  div_start_o,
 
     //jump-branch
-    input wire is_in_delayslot_o,
-    input wire [`RegBus] link_addr_o,
+    input wire              is_in_delayslot_i,
+    input wire [`RegBus]    link_addr_i,
     
     //load-store
-    input wire [`RegBus] inst_i,
-    output wire [`AluOpBus] aluop_o,
-    output wire [`RegBus] mem_addr_o,
-    output wire [`RegBus] reg2_o,
+    input wire [`RegBus]        inst_i,
+    output wire [`AluOpBus]     aluop_o,
+    output wire [`RegBus]       mem_addr_o,
+    output wire [`RegBus]       reg2_o,
 
-    //CP0
-    input wire mem_cp0_reg_we,
-	input wire [4:0] mem_cp0_reg_write_addr,
-	input wire [`RegBus] mem_cp0_reg_data,
-    input wire wb_cp0_reg_we,
-	input wire [4:0] wb_cp0_reg_write_addr,
-	input wire [`RegBus] wb_cp0_reg_data,
-    input wire [`RegBus] cp0_reg_data_i,
-	output reg [4:0] cp0_reg_read_addr_o,
-    output reg cp0_reg_we_o,
-	output reg [4:0] cp0_reg_write_addr_o,
-	output reg [`RegBus] cp0_reg_data_o
+    //chap10 : CP0
+    input wire              mem_cp0_reg_we,
+	input wire [4:0]        mem_cp0_reg_write_addr,
+	input wire [`RegBus]    mem_cp0_reg_data,
+    input wire              wb_cp0_reg_we,
+	input wire [4:0]        wb_cp0_reg_write_addr,
+	input wire [`RegBus]    wb_cp0_reg_data,
+    input wire [`RegBus]    cp0_reg_data_i,
+	output reg [4:0]        cp0_reg_read_addr_o,
+    output reg              cp0_reg_we_o,
+	output reg [4:0]        cp0_reg_write_addr_o,
+	output reg [`RegBus]    cp0_reg_data_o
+
+    //chap11 : exception
+    input wire [31:0]           excepttype_i,
+    input wire [`InstAddrBus]   current_inst_addr_i,
+    output reg [31:0]           excepttype_o,
+    output reg [`InstAddrBus]   current_inst_addr_o,
+    output reg                  is_in_delayslot_o
 );
 
     reg [`RegBus] logic_res;
@@ -181,12 +188,15 @@ module ex(
     wire reg1_lt_reg2;
     wire overflow_flag;
 
-    assign reg2_com = ( (aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (aluop_i == `EXE_SLT_OP) )?
+    assign reg2_com = ( (aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (aluop_i == `EXE_SLT_OP)
+                        (aluop_i == `EXE_TLTI_OP) || (aluop_i == `EXE_TGE_OP) || (aluop_i == `EXE_TGEI_OP) ) ?
                         (~reg2_i)+1 : reg2_i;
     assign result = reg1_i + reg2_com;
     assign overflow_flag = ( (reg1_i[31] && reg2_com[31] && !result[31]) ||
                             (!reg1_i[31] && !reg2_com[31] && result[31]) );
-    assign reg1_lt_reg2 = (aluop_i == `EXE_SLT_OP) ? (overflow_flag ? !result[31] : result[31]) : (reg1_i < reg2_i);
+    assign reg1_lt_reg2 = ( (aluop_i == `EXE_SLT_OP) ||
+                            (aluop_i == `EXE_TLTI_OP) || (aluop_i == `EXE_TGE_OP) || (aluop_i == `EXE_TGEI_OP) ) ?
+                            (overflow_flag ? !result[31] : result[31]) : (reg1_i < reg2_i);
 
     always @ (*) begin
         if (rst == `RstEnable) begin
@@ -450,6 +460,55 @@ module ex(
             cp0_reg_write_addr_o <= 5'b00000;
             cp0_reg_we_o <= `WriteDisable;
             cp0_reg_data_o <= `ZeroWord;
+        end
+    end
+
+    //phase 7.1 : trap exception
+    reg trapassert;
+
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            trapassert <= `TrapNoAssert;
+        end else begin
+            trapassert <= `TrapNoAssert;
+            case (aluop_i)
+				`EXE_TEQ_OP, `EXE_TEQI_OP:		begin
+					if( reg1_i == reg2_i ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				`EXE_TGE_OP, `EXE_TGEI_OP, `EXE_TGEIU_OP, `EXE_TGEU_OP:		begin
+					if( ~reg1_lt_reg2 ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				`EXE_TLT_OP, `EXE_TLTI_OP, `EXE_TLTIU_OP, `EXE_TLTU_OP:		begin
+					if( reg1_lt_reg2 ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				`EXE_TNE_OP, `EXE_TNEI_OP:		begin
+					if( reg1_i != reg2_i ) begin
+						trapassert <= `TrapAssert;
+					end
+				end
+				default:				begin
+					trapassert <= `TrapNotAssert;
+				end
+			endcase
+        end 
+    end
+
+    //phase 7.2 : overflow exception
+    reg ovassert;
+
+    always @ (*) begin
+        if (((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDIU_OP) || (aluop_i == `EXE_SUB_OP)) && overflow_flag) begin
+            wreg <= `WriteDisable;
+            ovassert <= 1'b1; //overflow exception
+        end else begin
+            wreg <= wreg_i;
+            ovassert <= 1'b0;
         end
     end
 
