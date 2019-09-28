@@ -588,6 +588,15 @@ module id(
                     instvalid <= `InstInvalid;
                 end
             endcase
+            //mtc0 and mfc0
+            if ((inst_i[31:21] == 11'b01000000000) && (inst_i[10:0] == 11'b00000000000)) begin
+                aluop_o <= `EXE_MFC0_OP; alusel_o <= `EXE_RES_MOVE;
+                wreg_o <= `WriteEnable;	wd_o <= rt;
+            end 
+            if ((inst_i[31:21] == 11'b01000000100) && (inst_i[10:0] == 11'b00000000000)) begin
+                aluop_o <= `EXE_MTC0_OP; alusel_o <= `EXE_RES_NOP;
+                reg1_read_o <= `ReadEnable; reg1_addr_o <= rt;
+            end
         end
     end
 

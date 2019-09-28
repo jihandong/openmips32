@@ -8,31 +8,38 @@ module mem(
     input wire whilo_i,
     input wire [`RegBus] hi_i,
     input wire [`RegBus] lo_i,
-    //load-save
-    input wire [`AluOpBus] aluop_i,
-    input wire [`RegBus] mem_addr_i,
-    input wire [`RegBus] reg2_i,   
-    input wire [`RegBus] mem_data_i,
-    //ll-sc
-    input wire LLbit_i,
-    input wire wb_LLbit_we_i,
-    input wire wb_LLbit_value_i,
-
     output reg [`RegAddrBus] wd_o,
     output reg wreg_o,
     output reg [`RegBus] wdata_o,
     output reg whilo_o,
     output reg [`RegBus] hi_o,
     output reg [`RegBus] lo_o,
-    //load-save to RAM
+    
+    //load-save
+    input wire [`AluOpBus] aluop_i,
+    input wire [`RegBus] mem_addr_i,
+    input wire [`RegBus] reg2_i,   
+    input wire [`RegBus] mem_data_i,
     output reg [`RegBus] mem_addr_o,
     output wire mem_we_o,
     output reg [3:0] mem_sel_o,
     output reg [`RegBus] mem_data_o,
     output reg mem_ce_o,
+    
     //ll-sc
+    input wire LLbit_i,
+    input wire wb_LLbit_we_i,
+    input wire wb_LLbit_value_i,
     output reg LLbit_we_o,
-    output reg LLbit_value_o
+    output reg LLbit_value_o,
+
+    //CP0
+    input wire cp0_reg_we_i,
+	input wire [4:0] cp0_reg_write_addr_i,
+	input wire [`RegBus] cp0_reg_data_i,
+    output reg cp0_reg_we_o,
+	output reg [4:0] cp0_reg_write_addr_o,
+	output reg [`RegBus] cp0_reg_data_o
 );
 
     wire [`RegBus] zero32;
@@ -351,4 +358,16 @@ module mem(
         end
     end
 
+    //CP0 message
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            cp0_reg_we_o <= `WriteDisable;
+	        cp0_reg_write_addr_o <= 5'b00000;
+	        cp0_reg_data_o <= `ZeroWord;
+        end else begin
+            cp0_reg_we_o <= cp0_reg_we_i;
+	        cp0_reg_write_addr_o <= cp0_reg_write_addr_i;
+	        cp0_reg_data_o <= cp0_reg_data_i;
+        end
+    end
 endmodule

@@ -16,8 +16,8 @@ module cp0_reg(
     output reg [`RegBus] cause_o,
     output reg [`RegBus] epc_o,
     output reg [`RegBus] config_o,
-    output reg [`RegBus] pride_o,
-    output reg time_int_o
+    output reg [`RegBus] prid_o,
+    output reg timer_int_o
 );
 
     // write phase
@@ -25,7 +25,7 @@ module cp0_reg(
         if (rst == `RstEnable) begin
             count_o <= `ZeroWord;
 			compare_o <= `ZeroWord;
-			status_o <= 32'x00010000000000000000000000000000; //CU==0001 means CP0 exists
+			status_o <= 32'b00010000000000000000000000000000; //CU==0001 means CP0 exists
 			cause_o <= `ZeroWord;
 			epc_o <= `ZeroWord;
 			config_o <= 32'b00000000000000001000000000000000; //BE==1 means big-endian, MT==00 means MMU not exists
@@ -34,7 +34,7 @@ module cp0_reg(
             count_o <= count_o + 1;
             cause_o[15:10] <= int_i; //keep interrupt declare
             if ((compare_o != `ZeroWord) && (count_o == compare_o)) begin
-                time_int_o <= `InterruptAssert;
+                timer_int_o <= `InterruptAssert;
             end
             if (we_i == `WriteEnable) begin
                 case(waddr_i)
@@ -64,7 +64,7 @@ module cp0_reg(
     end
 
     // read phase
-    always @ (posedge clk) begin
+    always @ (*) begin
         if (rst == `RstEnable) begin
             data_o <= `ZeroWord;
         end else begin

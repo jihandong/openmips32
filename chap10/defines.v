@@ -202,8 +202,9 @@
 `define EXE_SWL_OP      8'b11101010
 `define EXE_SWR_OP      8'b11101110
 `define EXE_SYNC_OP     8'b00001111
-
-
+//MFC0 and MTC0
+`define EXE_MFC0_OP     8'b01011101
+`define EXE_MTC0_OP     8'b01100000
 
 //AluSel
 `define EXE_RES_NOP         3'b000

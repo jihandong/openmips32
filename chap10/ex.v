@@ -8,6 +8,10 @@ module ex(
     input wire [`RegBus] reg2_i,
     input wire [`RegAddrBus] wd_i,
     input wire wreg_i,
+    output reg [`RegAddrBus] wd_o,  //written reg addr
+    output reg wreg_o,
+    output reg [`RegBus] wdata_o,   //written reg data
+    
     //hilo reg
     input wire [`RegBus] hi_i,
     input wire [`RegBus] lo_i,
@@ -17,39 +21,49 @@ module ex(
     input wire mem_whilo_i,
     input wire [`RegBus] mem_hi_i,
     input wire [`RegBus] mem_lo_i,
-    //for madd & msub
-    input wire cnt_i,
-    input wire [`DoubleRegBus] hilo_temp_i,
-    //div
-    input wire [`DoubleRegBus] div_result_i,
-    input wire div_ready_i, 
-    //jump-branch
-    input wire is_in_delayslot_o,
-    input wire [`RegBus] link_addr_o,
-    //load-store
-    input wire [`RegBus] inst_i,
-
-    output reg [`RegAddrBus] wd_o,  //written reg addr
-    output reg wreg_o,
-    output reg [`RegBus] wdata_o,   //written reg data
-    //hilo reg
     output reg whilo_o,
     output reg [`RegBus] hi_o,
     output reg [`RegBus] lo_o, 
+
     //stall request
     output reg stallreq,
+
     //for madd & msub
+    input wire cnt_i,
+    input wire [`DoubleRegBus] hilo_temp_i,
     output reg cnt_o,
     output reg [`DoubleRegBus] hilo_temp_o,
+
     //div
+    input wire [`DoubleRegBus] div_result_i,
+    input wire div_ready_i,
     output reg sign_div_o,
     output reg [`RegBus] div_opdata1_o,
     output reg [`RegBus] div_opdata2_o,
     output reg div_start_o,
+
+    //jump-branch
+    input wire is_in_delayslot_o,
+    input wire [`RegBus] link_addr_o,
+    
     //load-store
+    input wire [`RegBus] inst_i,
     output wire [`AluOpBus] aluop_o,
     output wire [`RegBus] mem_addr_o,
-    output wire [`RegBus] reg2_o
+    output wire [`RegBus] reg2_o,
+
+    //CP0
+    input wire mem_cp0_reg_we,
+	input wire [4:0] mem_cp0_reg_write_addr,
+	input wire [`RegBus] mem_cp0_reg_data,
+    input wire wb_cp0_reg_we,
+	input wire [4:0] wb_cp0_reg_write_addr,
+	input wire [`RegBus] wb_cp0_reg_data,
+    input wire [`RegBus] cp0_reg_data_i,
+	output reg [4:0] cp0_reg_read_addr_o,
+    output reg cp0_reg_we_o,
+	output reg [4:0] cp0_reg_write_addr_o,
+	output reg [`RegBus] cp0_reg_data_o
 );
 
     reg [`RegBus] logic_res;
@@ -139,6 +153,17 @@ module ex(
                 end
                 `EXE_MFLO_OP : begin
                     move_res <= LO;
+                end
+                `EXE_MFC0_OP : begin
+                    cp0_reg_read_addr_o <= inst_i[15:11];
+                    //data relate
+                    if ((mem_cp0_reg_we == `WriteEnable) && (mem_cp0_reg_write_addr == inst_i[15:11])) begin
+                        move_res <= mem_cp0_reg_data;
+                    end else if ((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == inst_i[15:11])) begin
+                        move_res <= wb_cp0_reg_data;
+                    end else begin
+                        move_res <= cp0_reg_data_i;
+                    end
                 end
                 default : begin
                     move_res <= `ZeroWord;
@@ -409,5 +434,23 @@ module ex(
                 end
             endcase
         end
-    end 
+    end
+
+    // pahse 6 : write into CP0
+    always @ (*) begin
+        if (rst == `RstEnable) begin
+            cp0_reg_write_addr_o <= 5'b00000;
+            cp0_reg_we_o <= `WriteDisable;
+            cp0_reg_data_o <= `ZeroWord;
+        end else if (aluop_i == `EXE_MTC0_OP) begin
+            cp0_reg_write_addr_o <= inst_i[15:11];
+            cp0_reg_we_o <= `WriteEnable;
+            cp0_reg_data_o <= reg1_i;
+        end else begin
+            cp0_reg_write_addr_o <= 5'b00000;
+            cp0_reg_we_o <= `WriteDisable;
+            cp0_reg_data_o <= `ZeroWord;
+        end
+    end
+
 endmodule
