@@ -53,8 +53,8 @@ module id(
     output wire [`InstBus] inst_o,
 
     //chap11 : exception
-    output reg [31:0] excepttype_o,
-    output reg [`InstAddrBus] current_inst_addr_o
+    output wire [31:0] excepttype_o,
+    output wire [`InstAddrBus] current_inst_addr_o
 );
 
     // phase0 : prepare
@@ -389,6 +389,7 @@ module id(
                             instvalid <= `InstValid;
 					    	aluop_o <= `EXE_SYSCALL_OP; alusel_o <= `EXE_RES_NOP;
 		  			    	excepttype_is_syscall<= `True_v;
+                        end
                         default : begin
                         end
                     endcase
@@ -743,7 +744,7 @@ module id(
             endcase
             //chap10 : mtc0, mfc0
             //chap11 : eret
-            if(inst_i == `EXE_ERET) begin
+            if (inst_i == `EXE_ERET) begin
                 instvalid <= `InstValid;
 				aluop_o <= `EXE_ERET_OP; alusel_o <= `EXE_RES_NOP; 
 		        excepttype_is_eret<= `True_v;

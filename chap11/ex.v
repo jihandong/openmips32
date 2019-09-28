@@ -63,7 +63,7 @@ module ex(
 	output reg [4:0]        cp0_reg_read_addr_o,
     output reg              cp0_reg_we_o,
 	output reg [4:0]        cp0_reg_write_addr_o,
-	output reg [`RegBus]    cp0_reg_data_o
+	output reg [`RegBus]    cp0_reg_data_o,
 
     //chap11 : exception
     input wire [31:0]           excepttype_i,
@@ -188,7 +188,7 @@ module ex(
     wire reg1_lt_reg2;
     wire overflow_flag;
 
-    assign reg2_com = ( (aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (aluop_i == `EXE_SLT_OP)
+    assign reg2_com = ( (aluop_i == `EXE_SUB_OP) || (aluop_i == `EXE_SUBU_OP) || (aluop_i == `EXE_SLT_OP) ||
                         (aluop_i == `EXE_TLTI_OP) || (aluop_i == `EXE_TGE_OP) || (aluop_i == `EXE_TGEI_OP) ) ?
                         (~reg2_i)+1 : reg2_i;
     assign result = reg1_i + reg2_com;
@@ -394,7 +394,7 @@ module ex(
                 wdata_o <= hilo_temp[31:0];
             end
             `EXE_RES_JUMP_BRANCH : begin
-                wdata_o <= link_addr_o;
+                wdata_o <= link_addr_i;
             end
             default : begin
                 wdata_o <= `ZeroWord;
@@ -468,9 +468,9 @@ module ex(
 
     always @ (*) begin
         if (rst == `RstEnable) begin
-            trapassert <= `TrapNoAssert;
+            trapassert <= `TrapNotAssert;
         end else begin
-            trapassert <= `TrapNoAssert;
+            trapassert <= `TrapNotAssert;
             case (aluop_i)
 				`EXE_TEQ_OP, `EXE_TEQI_OP:		begin
 					if( reg1_i == reg2_i ) begin
@@ -504,10 +504,10 @@ module ex(
 
     always @ (*) begin
         if (((aluop_i == `EXE_ADD_OP) || (aluop_i == `EXE_ADDIU_OP) || (aluop_i == `EXE_SUB_OP)) && overflow_flag) begin
-            wreg <= `WriteDisable;
+            wreg_o <= `WriteDisable;
             ovassert <= 1'b1; //overflow exception
         end else begin
-            wreg <= wreg_i;
+            wreg_o <= wreg_i;
             ovassert <= 1'b0;
         end
     end

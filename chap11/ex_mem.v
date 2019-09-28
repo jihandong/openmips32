@@ -67,7 +67,7 @@ module ex_mem(
 	        mem_cp0_reg_data <= `ZeroWord;
             mem_excepttype <= `ZeroWord;
             mem_current_inst_addr <= `ZeroWord;
-            mem_is_in_delayslot <= `NoInDelaySlot;
+            mem_is_in_delayslot <= `NotInDelaySlot;
         end else if (flush == 1'b1) begin //clear pipline
             mem_wd <= `NOPRegAddr;
             mem_wreg <= `WriteDisable;
@@ -85,7 +85,7 @@ module ex_mem(
 	        mem_cp0_reg_data <= `ZeroWord;
             mem_excepttype <= `ZeroWord;
             mem_current_inst_addr <= `ZeroWord;
-            mem_is_in_delayslot <= `NoInDelaySlot;
+            mem_is_in_delayslot <= `NotInDelaySlot;
         end else if ((stall[3] == `Stop) && (stall[4] == `NoStop)) begin
             mem_wd <= `NOPRegAddr;
             mem_wreg <= `WriteDisable;
@@ -103,7 +103,7 @@ module ex_mem(
 	        mem_cp0_reg_data <= `ZeroWord;
             mem_excepttype <= `ZeroWord;
             mem_current_inst_addr <= `ZeroWord;
-            mem_is_in_delayslot <= `NoInDelaySlot;
+            mem_is_in_delayslot <= `NotInDelaySlot;
         end else if (stall[3] == `NoStop) begin
             mem_wd <= ex_wd;
             mem_wreg <= ex_wreg;

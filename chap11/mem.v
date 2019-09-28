@@ -56,8 +56,12 @@ module mem(
 	output wire                 is_in_delayslot_o
 );
 
-    reg mem_we;
-    wire [`RegBus] zero32;
+    reg             LLbit;
+    reg [`RegBus]   cp0_status;
+    reg [`RegBus]   cp0_cause;
+    reg [`RegBus]   cp0_epc;
+    reg             mem_we;
+    wire [`RegBus]  zero32;
     assign mem_we_o = mem_we & (~(|excepttype_o)); //writedisable when exception
     assign zero32 = `ZeroWord;
 
@@ -361,7 +365,6 @@ module mem(
     end
 
     //chap9 : fresh LLbit
-    reg LLbit;
     always @ (*) begin
         if (rst == `RstEnable) begin
             LLbit <= 1'b0;
@@ -393,7 +396,7 @@ module mem(
     always @ (*) begin
 		if(rst == `RstEnable) begin
 	        cp0_status <= `ZeroWord;
-		end else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == `CP0_REG_STATUS )) begin
+		end else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_waddr == `CP0_REG_STATUS )) begin
 		    cp0_status <= wb_cp0_reg_data;
 		end else begin
 		    cp0_status <= cp0_status_i;
@@ -404,7 +407,7 @@ module mem(
     always @ (*) begin
 		if(rst == `RstEnable) begin
 			cp0_epc <= `ZeroWord;
-		end else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == `CP0_REG_EPC )) begin
+		end else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_waddr == `CP0_REG_EPC )) begin
 			cp0_epc <= wb_cp0_reg_data;
 		end else begin
 		    cp0_epc <= cp0_epc_i;
@@ -415,7 +418,7 @@ module mem(
     always @ (*) begin
 		if(rst == `RstEnable) begin
 			cp0_cause <= `ZeroWord;
-		end else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_write_addr == `CP0_REG_CAUSE )) begin
+		end else if((wb_cp0_reg_we == `WriteEnable) && (wb_cp0_reg_waddr == `CP0_REG_CAUSE )) begin
 			cp0_cause[9:8] <= wb_cp0_reg_data[9:8];
 			cp0_cause[22] <= wb_cp0_reg_data[22];
 			cp0_cause[23] <= wb_cp0_reg_data[23];
@@ -430,7 +433,7 @@ module mem(
 			excepttype_o <= `ZeroWord;
         end else begin
 			excepttype_o <= `ZeroWord;
-			if(current_inst_address_i != `ZeroWord) begin
+			if(current_inst_addr_i != `ZeroWord) begin
 				if(((cp0_cause[15:8] & (cp0_status[15:8])) != 8'h00) && (cp0_status[1] == 1'b0) && (cp0_status[0] == 1'b1)) begin
 					excepttype_o <= 32'h00000001;        //interrupt
 				end else if(excepttype_i[8] == 1'b1) begin

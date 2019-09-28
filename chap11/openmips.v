@@ -156,9 +156,9 @@ module openmips(
     wire [`InstAddrBus]     mem_cp0reg_current_inst_addr;
     wire                    mem_cp0reg_is_in_delayslot;
     wire [`RegBus]          mem_ctrl_cp0_epc;
-    wire [`RegBus]          cp0reg_mem_status,
-    wire [`RegBus]          cp0reg_mem_cause,
-    wire [`RegBus]          cp0reg_mem_epc,
+    wire [`RegBus]          cp0reg_mem_status;
+    wire [`RegBus]          cp0reg_mem_cause;
+    wire [`RegBus]          cp0reg_mem_epc;
 
 
     pc_reg pc_reg0(
@@ -228,7 +228,7 @@ module openmips(
         .ex_aluop_i(ex_exmem_aluop),
 
         //load-store
-        .inst_o(id_idex_inst)，
+        .inst_o(id_idex_inst),
 
         //chap11 : exception
         .excepttype_o(id_idex_excepttype),
@@ -476,7 +476,7 @@ module openmips(
         .excepttype_o(mem_cp0reg_excepttype),
 		.current_inst_addr_o(mem_cp0reg_current_inst_addr),
         .is_in_delayslot_o(mem_cp0reg_is_in_delayslot),
-        .cp0_epc_i(mem_ctrl_cp0_epc)
+        .cp0_epc_o(mem_ctrl_cp0_epc)
     );
 
     mem_wb mem_wb0(

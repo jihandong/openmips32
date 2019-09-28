@@ -5,7 +5,7 @@ module pc_reg(
     input wire rst,
     input wire [5:0] stall, //stall command
     output reg ce,
-    output reg [`InstAddrBus] pc
+    output reg [`InstAddrBus] pc,
 
     //branch
     input wire branch_flag_i,

@@ -21,7 +21,7 @@ module cp0_reg(
 	input wire [31:0]       excepttype_i,
 	input wire [5:0]        int_i,
 	input wire [`RegBus]	current_inst_addr_i,
-	input wire              is_in_delayslot_i,
+	input wire              is_in_delayslot_i
 );
 
     // write phase

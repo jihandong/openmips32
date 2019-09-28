@@ -5,11 +5,8 @@ module LLbit_reg(
     input wire clk,
     input wire we,
     input wire LLbit_i,
-    input wire flush,
-    output reg LLbit_o,
-
-    //chap11 : exception
-    input wire flush
+    input wire flush,   //chap11 : exception
+    output reg LLbit_o
 );
 
     always @ (posedge clk) begin
